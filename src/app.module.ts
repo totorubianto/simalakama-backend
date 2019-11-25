@@ -10,15 +10,12 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     UsersModule,
     // harus pakai mongodb replica set atau run-rs
-    MongooseModule.forRoot(
-      'mongodb://localhost:27019/simalakama?replicaSet=rs',
-      {
-        useCreateIndex: true,
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-      },
-    ),
+    MongooseModule.forRoot('mongodb://localhost:27017/simalakama', {
+      useCreateIndex: true,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

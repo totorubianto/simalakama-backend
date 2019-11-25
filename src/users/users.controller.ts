@@ -13,7 +13,6 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
-// import { ValidationPipe } from '../middleware/pipe/validate.pipe';
 import { Roles } from '../middleware/decorator/guard.decorator';
 import { RolesGuard } from '../middleware/guard/user.guard';
 import { UserCustom } from '../middleware/decorator/userLogged.decorator';
@@ -39,30 +38,31 @@ export class UsersController {
     private usersService: UsersService,
     private authService: AuthService,
   ) {}
-  // getPost
+  // @Register
   @Post('register')
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
   }
-
+  // @Login
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto) {
     return await this.authService.validateUserByPassword(loginUserDto);
   }
 
+  // @uUpdate Profile
   @Post('update')
   @UseGuards(AuthGuard())
   async update(@Body() updateUserDto: UpdateUserDto, @UserCustom() user: any) {
     return await this.usersService.updateProfile(updateUserDto, user);
   }
 
-  // getUserAll
+  // findAll
   @Get()
   findAll(): Promise<any[]> {
     return this.usersService.findAll();
   }
 
-  // upload avatar
+  // uploadAvatar
   @Post('upload-avatar')
   @UseGuards(AuthGuard())
   @Roles('admin', 'user')

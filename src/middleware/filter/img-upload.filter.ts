@@ -1,21 +1,10 @@
 import { extname } from 'path';
 import * as uuidv1 from 'uuid/v1';
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, ForbiddenException } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 export const imageFileFilter = (req, file, callback) => {
   if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-    return callback(
-      new HttpException(
-        {
-          data: {
-            message: 'warning',
-            errors: 'file extension tidak sesuai',
-          },
-        },
-        HttpStatus.BAD_REQUEST,
-      ),
-      false,
-    );
+    return callback(new ForbiddenException('file extension tidak sesuai'));
   }
   callback(null, true);
 };

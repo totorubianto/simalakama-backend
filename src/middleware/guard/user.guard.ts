@@ -3,15 +3,12 @@ import {
   CanActivate,
   ExecutionContext,
   UseFilters,
-  HttpException,
-  HttpStatus,
+  ForbiddenException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import * as JWT from 'jwt-decode';
-import { HttpExceptionFilter } from '../filter/http-exception.filter';
+
 @Injectable()
-@UseFilters(HttpExceptionFilter)
 export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
@@ -23,7 +20,7 @@ export class RolesGuard implements CanActivate {
     }
     const req = context.switchToHttp().getRequest();
     if (!req.headers['authorization']) {
-      return false;
+      throw new ForbiddenException('andas');
     }
     const user = JWT(req.headers['authorization']);
 
