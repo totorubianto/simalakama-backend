@@ -64,13 +64,12 @@ export class AuthService {
       throw new UnauthorizedException('Session login anda sudah habis');
     const data = JWT(user.token);
     const expiresIn = data.exp * 1000;
-
-    if (expiresIn > Date.now()) {
-      return this.createJwtPayload(payload);
-    } else {
+    let compareDate: boolean = expiresIn > Date.now();
+    if (!compareDate) {
       await this.authModel.deleteOne(token);
       throw new UnauthorizedException('Session login anda sudah habis');
     }
+    return this.createJwtPayload(payload);
   }
 
   // create jwt payload
