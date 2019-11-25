@@ -1,0 +1,12 @@
+	
+USER
+
+1. register berhasil 			[v]
+2. register name sama 			[v]
+3. login                        [v]
+4. getUser				        [v]
+5. transfer oke				    [v]
+6. guard belum sama stylenya	[v]
+7. getItem                      [v]
+8. crud getItem                 [v]
+9. upload avatar                [x] masih ada bug
