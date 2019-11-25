@@ -51,28 +51,25 @@ export class AuthService {
   }
 
   // find token from header and check of auth model
-  async findTokenEmail(token): Model<Auth> {
+  async findTokenEmail(token: string): Model<Auth> {
     const tokenNotBearer = token.replace('Bearer ', '');
     const data = await this.authModel.findOne({ token: tokenNotBearer });
-    if (!data) throw new UnauthorizedException();
     return data;
   }
 
   // validate user by jwt
   async validateUserByJwt(payload: JwtPayload, token: string) {
     let user = await this.findTokenEmail(token);
-    if (user) {
-      const data = JWT(user.token);
-      const expiresIn = data.exp * 1000;
+    if (!user)
+      throw new UnauthorizedException('Session login anda sudah habis');
+    const data = JWT(user.token);
+    const expiresIn = data.exp * 1000;
 
-      if (expiresIn > Date.now()) {
-        return this.createJwtPayload(payload);
-      } else {
-        await this.authModel.deleteOne(token);
-        throw new UnauthorizedException();
-      }
+    if (expiresIn > Date.now()) {
+      return this.createJwtPayload(payload);
     } else {
-      throw new UnauthorizedException();
+      await this.authModel.deleteOne(token);
+      throw new UnauthorizedException('Session login anda sudah habis');
     }
   }
 

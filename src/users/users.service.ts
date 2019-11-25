@@ -24,7 +24,7 @@ export class UsersService {
   }
 
   // findall user service
-  async findById(id): Model<User> {
+  async findById(id: string): Model<User> {
     return await this.userModel.findById(id);
   }
 

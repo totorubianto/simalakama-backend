@@ -55,10 +55,17 @@ export class UsersController {
     return await this.usersService.updateProfile(updateUserDto, user);
   }
 
-  // findAll
+  // @findAll
   @Get()
   findAll(): Promise<any[]> {
     return this.usersService.findAll();
+  }
+
+  // @me
+  @Get('me')
+  @UseGuards(AuthGuard())
+  me(@UserCustom() user: any): Promise<any[]> {
+    return this.usersService.findById(user._id);
   }
 
   // uploadAvatar

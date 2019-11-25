@@ -24,13 +24,13 @@ export const UserSchema = new mongoose.Schema(
       type: String,
     },
   },
-  // {
-  //   toJSON: {
-  //     transform: function(doc, ret) {
-  //       delete ret.password;
-  //     },
-  //   },
-  // },
+  {
+    toJSON: {
+      transform: function(doc, ret) {
+        delete ret.password;
+      },
+    },
+  },
 );
 
 // sebelum save
