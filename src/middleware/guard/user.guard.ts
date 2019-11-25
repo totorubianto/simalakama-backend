@@ -20,7 +20,7 @@ export class RolesGuard implements CanActivate {
     }
     const req = context.switchToHttp().getRequest();
     if (!req.headers['authorization']) {
-      throw new ForbiddenException('andas');
+      throw new ForbiddenException('anda belum login');
     }
     const user = JWT(req.headers['authorization']);
 

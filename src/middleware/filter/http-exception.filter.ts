@@ -16,10 +16,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const messsage = exception.getResponse();
 
     response.status(status).json({
-      statusCode: status,
-      messsage:messsage,
-      timestamp: new Date().toISOString(),
-      path: request.url,
+      errors: {
+        statusCode: status,
+        messsage: messsage,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      },
     });
   }
 }

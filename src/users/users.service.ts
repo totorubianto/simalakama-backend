@@ -46,10 +46,10 @@ export class UsersService {
   async uploadAvatar(data: any, user: any): Model<User> {
     if (!data) throw new BadRequestException('harap masukan file');
     const deleteImg = await this.userModel.findById(user._id);
-    if (deleteImg.avatar) {
-      const pathDelete = './upload/avatar/' + deleteImg.avatar;
-      fs.unlinkSync(pathDelete);
-    }
+
+    const pathDelete = './public/avatar/' + deleteImg.avatar;
+    if (fs.existsSync(pathDelete)) fs.unlinkSync(pathDelete);
+
     const userData = await this.userModel.findByIdAndUpdate(
       user._id,
       { avatar: data.filename },

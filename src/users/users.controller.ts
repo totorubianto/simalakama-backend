@@ -16,7 +16,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../middleware/decorator/guard.decorator';
 import { RolesGuard } from '../middleware/guard/user.guard';
 import { UserCustom } from '../middleware/decorator/userLogged.decorator';
-import { TransferDto } from '../users/dto/transfer.dto';
 import { TransformInterceptor } from '../middleware/interceptor/transform.interceptor';
 import { HttpExceptionFilter } from '../middleware/filter/http-exception.filter';
 import { FileInterceptor } from '@nestjs/platform-express';
