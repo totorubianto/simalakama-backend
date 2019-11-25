@@ -5,6 +5,7 @@ import {
   Response,
   HttpException,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from '../users/dto/login-user.dto';
@@ -26,63 +27,35 @@ export class AuthService {
 
   // validation user by password
   async validateUserByPassword(loginAttempt: LoginUserDto) {
-    try {
-      let userToAttempt = await this.usersService.findOneByEmail(
-        loginAttempt.email,
-      );
-      if (!userToAttempt)
-        throw new HttpException(
-          {
-            data: {
-              message: 'Input data validation failed',
-              errors: {
-                email: 'email tidak ditemukan',
-              },
-            },
-          },
-          HttpStatus.BAD_REQUEST,
-        );
-      const isMatch = await bcrypt.compare(
-        loginAttempt.password,
-        userToAttempt.password,
-      );
-      if (!isMatch)
-        throw new HttpException(
-          {
-            data: {
-              message: 'Input data validation failed',
-              errors: {
-                password: 'password yang anda masukan salah',
-              },
-            },
-          },
-          HttpStatus.BAD_REQUEST,
-        );
+    let userToAttempt = await this.usersService.findOneByEmail(
+      loginAttempt.email,
+    );
+    if (!userToAttempt) throw new BadRequestException('email tidak ditemukan');
+    const isMatch = await bcrypt.compare(
+      loginAttempt.password,
+      userToAttempt.password,
+    );
+    if (!isMatch)
+      throw new BadRequestException('password yang anda masukan salah');
 
-      const data = this.createJwtPayload(userToAttempt);
-      let jwtData = JWT(data.token);
-      const saveToken = {
-        token: data.token,
-        user: jwtData._id,
-        expiresIn: jwtData.exp,
-      };
-      const newItem = new this.authModel(saveToken);
-      const result = newItem.save();
-      return result;
-    } catch (error) {
-      throw new HttpException(error.message, error.status);
-    }
+    const data = this.createJwtPayload(userToAttempt);
+    let jwtData = JWT(data.token);
+    const saveToken = {
+      token: data.token,
+      user: jwtData._id,
+      expiresIn: jwtData.exp,
+    };
+    const newItem = new this.authModel(saveToken);
+    const result = newItem.save();
+    return result;
   }
 
   // find token from header and check of auth model
   async findTokenEmail(token): Model<Auth> {
     const tokenNotBearer = token.replace('Bearer ', '');
-    try {
-      const data = await this.authModel.findOne({ token: tokenNotBearer });
-      return data;
-    } catch (error) {
-      throw new UnauthorizedException();
-    }
+    const data = await this.authModel.findOne({ token: tokenNotBearer });
+    if (!data) throw new UnauthorizedException();
+    return data;
   }
 
   // validate user by jwt
@@ -95,7 +68,7 @@ export class AuthService {
       if (expiresIn > Date.now()) {
         return this.createJwtPayload(payload);
       } else {
-        await this.authModel.deleteOne(token)
+        await this.authModel.deleteOne(token);
         throw new UnauthorizedException();
       }
     } else {

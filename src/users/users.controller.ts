@@ -1,8 +1,19 @@
-import { Controller, Get, Post, Body, UseGuards, UsePipes, UseInterceptors, UseFilters, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  UsePipes,
+  UseInterceptors,
+  UseFilters,
+  UploadedFile,
+  ValidationPipe,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ValidationPipe } from '../middleware/pipe/validate.pipe';
+// import { ValidationPipe } from '../middleware/pipe/validate.pipe';
 import { Roles } from '../middleware/decorator/guard.decorator';
 import { RolesGuard } from '../middleware/guard/user.guard';
 import { UserCustom } from '../middleware/decorator/userLogged.decorator';
@@ -11,16 +22,23 @@ import { TransformInterceptor } from '../middleware/interceptor/transform.interc
 import { HttpExceptionFilter } from '../middleware/filter/http-exception.filter';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { LoginUserDto } from './dto/login-user.dto'
-import { editFileName, imageFileFilter } from '../middleware/filter/img-upload.filter';
-import { AuthService } from '../auth/auth.service'
+import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  editFileName,
+  imageFileFilter,
+} from '../middleware/filter/img-upload.filter';
+import { AuthService } from '../auth/auth.service';
 @Controller('users')
 @UsePipes(ValidationPipe)
 @UseFilters(HttpExceptionFilter)
 @UseInterceptors(TransformInterceptor)
 @UseGuards(RolesGuard)
 export class UsersController {
-  constructor(private usersService: UsersService, private authService: AuthService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
   // getPost
   @Post('register')
   async create(@Body() createUserDto: CreateUserDto) {
@@ -32,18 +50,16 @@ export class UsersController {
     return await this.authService.validateUserByPassword(loginUserDto);
   }
 
+  @Post('update')
+  @UseGuards(AuthGuard())
+  async update(@Body() updateUserDto: UpdateUserDto, @UserCustom() user: any) {
+    return await this.usersService.updateProfile(updateUserDto, user);
+  }
+
   // getUserAll
   @Get()
   findAll(): Promise<any[]> {
     return this.usersService.findAll();
-  }
-
-  // user transfer (user to user)
-  @Post('transfer')
-  @UseGuards(AuthGuard())
-  @Roles('admin', 'user')
-  async transfer(@Body() data: TransferDto, @UserCustom() user: any) {
-    return await this.usersService.transfer(data, user);
   }
 
   // upload avatar
@@ -53,7 +69,7 @@ export class UsersController {
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
-        destination: './upload/avatar',
+        destination: './public/avatar',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,

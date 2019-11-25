@@ -16,10 +16,6 @@ export const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    balance: {
-      type: Number,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
@@ -28,19 +24,19 @@ export const UserSchema = new mongoose.Schema(
       type: String,
     },
   },
-  {
-    toJSON: {
-      transform: function(doc, ret) {
-        delete ret.password;
-      },
-    },
-  },
+  // {
+  //   toJSON: {
+  //     transform: function(doc, ret) {
+  //       delete ret.password;
+  //     },
+  //   },
+  // },
 );
 
 // sebelum save
 UserSchema.pre('save', function(next) {
   let user = this;
-
+  console.log(user);
   // biar tidak mengulang hash password
   if (!user.isModified('password')) return next();
 
