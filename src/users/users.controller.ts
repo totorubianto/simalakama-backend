@@ -27,6 +27,7 @@ import {
   imageFileFilter,
 } from '../middleware/filter/img-upload.filter';
 import { AuthService } from '../auth/auth.service';
+
 @Controller('users')
 @UsePipes(ValidationPipe)
 @UseFilters(HttpExceptionFilter)
@@ -37,6 +38,7 @@ export class UsersController {
     private usersService: UsersService,
     private authService: AuthService,
   ) {}
+
   // @Register
   @Post('register')
   async create(@Body() createUserDto: CreateUserDto) {
@@ -75,7 +77,7 @@ export class UsersController {
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
-        destination: './public/avatar',
+        destination:'./public/avatar',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
