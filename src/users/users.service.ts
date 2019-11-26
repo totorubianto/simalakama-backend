@@ -1,10 +1,8 @@
 import { Model } from 'mongoose';
-import { Injectable, HttpStatus, BadRequestException } from '@nestjs/common';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './interfaces/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
-import { TransferDto } from './dto/transfer.dto';
 import * as fs from 'fs';
 
 @Injectable()

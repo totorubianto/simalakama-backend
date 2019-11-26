@@ -9,8 +9,7 @@ import { UsersModule } from './users/users.module';
   imports: [
     AuthModule,
     UsersModule,
-    // harus pakai mongodb replica set atau run-rs
-    MongooseModule.forRoot('mongodb://localhost:27017/simalakama', {
+    MongooseModule.forRoot('mongodb://LAPTOP-1UN8TADQ:27017/simalakama', {
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
