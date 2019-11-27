@@ -36,7 +36,6 @@ export const UserSchema = new mongoose.Schema(
 // sebelum save
 UserSchema.pre('save', function(next) {
   let user = this;
-  console.log(user);
   // biar tidak mengulang hash password
   if (!user.isModified('password')) return next();
 

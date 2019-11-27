@@ -36,6 +36,7 @@ export class UsersService {
   // updateProfile service
   async updateProfile(data: any, user: any): Model<User> {
     let users: Model<User> = await this.findById(user._id);
+    if (data.email && data.email === users.email) throw new BadRequestException('anda tidak melakukan perubahan apa pun pada email')
     if (data.name) users.name = data.name;
     if (data.email) users.email = data.email;
     if (data.password) users.password = data.password;

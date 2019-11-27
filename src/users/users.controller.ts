@@ -13,11 +13,11 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from '../middleware/decorator/guard.decorator';
-import { RolesGuard } from '../middleware/guard/user.guard';
-import { UserCustom } from '../middleware/decorator/userLogged.decorator';
-import { TransformInterceptor } from '../middleware/interceptor/transform.interceptor';
-import { HttpExceptionFilter } from '../middleware/filter/http-exception.filter';
+import { Roles } from '../global/decorator/guard.decorator';
+import { RolesGuard } from '../global/guard/user.guard';
+import { UserCustom } from '../global/decorator/userLogged.decorator';
+import { TransformInterceptor } from '../global/interceptor/transform.interceptor';
+import { HttpExceptionFilter } from '../global/filter/http-exception.filter';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -25,7 +25,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import {
   editFileName,
   imageFileFilter,
-} from '../middleware/filter/img-upload.filter';
+} from '../global/filter/img-upload.filter';
 import { AuthService } from '../auth/auth.service';
 
 @Controller('users')
