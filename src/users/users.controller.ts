@@ -9,6 +9,7 @@ import {
   UseFilters,
   UploadedFile,
   ValidationPipe,
+  Param,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -27,6 +28,7 @@ import {
   imageFileFilter,
 } from '../global/filter/img-upload.filter';
 import { AuthService } from '../auth/auth.service';
+import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -71,10 +73,13 @@ export class UsersController {
   }
 
   // Forgot Password
-  @Get('forgot-password')
+  @Post('forgot-password/:id')
   @UseGuards(AuthGuard())
-  forgot(@UserCustom() user: any): Promise<any[]> {
-    return this.usersService.forgotPassword(user);
+  forgot(
+    @UserCustom() user: any,
+    @Param('id') param: ForgotPasswordUserDto,
+  ): Promise<any[]> {
+    return this.usersService.forgotPassword(user, param);
   }
 
   // uploadAvatar

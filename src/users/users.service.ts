@@ -5,13 +5,14 @@ import { User } from './interfaces/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as fs from 'fs';
 import { dirname } from 'path';
+import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel('User') private userModel: Model<User>) {}
 
   //create service
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.userModel.findOne({ email: createUserDto.email });
     if (user) throw new BadRequestException('user sudah ada');
     let createdUser = new this.userModel(createUserDto);
@@ -19,7 +20,7 @@ export class UsersService {
   }
 
   // findall user service
-  async findOneByEmail(email): Model<User> {
+  async findOneByEmail(email): Promise<User> {
     return await this.userModel.findOne({ email: email });
   }
 
@@ -29,12 +30,12 @@ export class UsersService {
   }
 
   // findall user service
-  async findAll(): Model<User> {
+  async findAll(): Promise<User[]> {
     return await this.userModel.find();
   }
 
   // updateProfile service
-  async updateProfile(data: any, user: any): Model<User> {
+  async updateProfile(data: any, user: any): Promise<User> {
     let users: Model<User> = await this.findById(user._id);
     if (data.email && data.email === users.email)
       throw new BadRequestException(
@@ -46,12 +47,17 @@ export class UsersService {
     return await users.save();
   }
 
-  async forgotPassword(user: object): Model<User> {
-    console.log(user);
+  async forgotPassword(
+    user: Model<User>,
+    forgotPassword: ForgotPasswordUserDto,
+  ): Promise<any> {
+    console.log(forgotPassword);
+    let users: Model<User> = await this.findById(user._id);
+    return { message: 'ok' };
   }
 
   // upload user avatar service
-  async uploadAvatar(data: any, user: any): Model<User> {
+  async uploadAvatar(data: any, user: any): Promise<User> {
     if (!data) throw new BadRequestException('harap masukan file');
     const deleteImg = await this.userModel.findById(user._id);
     const pathDelete = './public/avatar/' + deleteImg.avatar;
