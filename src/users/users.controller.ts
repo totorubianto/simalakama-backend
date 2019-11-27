@@ -70,6 +70,13 @@ export class UsersController {
     return this.usersService.findById(user._id);
   }
 
+  // Forgot Password
+  @Get('forgot-password')
+  @UseGuards(AuthGuard())
+  forgot(@UserCustom() user: any): Promise<any[]> {
+    return this.usersService.forgotPassword(user);
+  }
+
   // uploadAvatar
   @Post('upload-avatar')
   @UseGuards(AuthGuard())
@@ -77,7 +84,7 @@ export class UsersController {
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
-        destination:'./public/avatar',
+        destination: './public/avatar',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,

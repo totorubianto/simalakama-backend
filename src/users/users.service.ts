@@ -36,11 +36,18 @@ export class UsersService {
   // updateProfile service
   async updateProfile(data: any, user: any): Model<User> {
     let users: Model<User> = await this.findById(user._id);
-    if (data.email && data.email === users.email) throw new BadRequestException('anda tidak melakukan perubahan apa pun pada email')
+    if (data.email && data.email === users.email)
+      throw new BadRequestException(
+        'anda tidak melakukan perubahan apa pun pada email',
+      );
     if (data.name) users.name = data.name;
     if (data.email) users.email = data.email;
     if (data.password) users.password = data.password;
     return await users.save();
+  }
+
+  async forgotPassword(user: object): Model<User> {
+    console.log(user);
   }
 
   // upload user avatar service
@@ -49,7 +56,11 @@ export class UsersService {
     const deleteImg = await this.userModel.findById(user._id);
     const pathDelete = './public/avatar/' + deleteImg.avatar;
     if (fs.existsSync(pathDelete)) fs.unlinkSync(pathDelete);
-    const userData = await this.userModel.findByIdAndUpdate(user._id, { avatar: data.filename }, { new: true });
+    const userData = await this.userModel.findByIdAndUpdate(
+      user._id,
+      { avatar: data.filename },
+      { new: true },
+    );
     if (!userData) throw new BadRequestException('upload file gagal');
     return userData;
   }
