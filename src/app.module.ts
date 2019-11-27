@@ -10,7 +10,7 @@ import { ConfigModule } from './config/config.module';
   imports: [
     AuthModule,
     UsersModule,
-    MongooseModule.forRoot(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PORT}/${process.env.DB_NAME}`, {
+    MongooseModule.forRoot(process.env.MONGO_URL, {
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
