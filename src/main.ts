@@ -10,7 +10,7 @@ async function bootstrap() {
   app.enableCors();
   app.use(cookieParser());
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.listen(app.get(ConfigService).getInt('APP_PORT'));
+  app.listen(process.env.PORT || app.get(ConfigService).getInt('APP_PORT'))
 }
 
 bootstrap();
