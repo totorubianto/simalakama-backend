@@ -62,7 +62,7 @@ export class UsersController {
   // @findAll
   @Get()
   findAll(): Promise<any[]> {
-    return this.usersService.findAll();
+    return this.usersService.findAll(null);
   }
 
   // @me
