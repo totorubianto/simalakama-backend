@@ -51,16 +51,15 @@ export class UsersService {
       if (usersAll.length > 0)
         throw new BadRequestException('email sudah digunakan');
     }
-
     if (data.password) {
       if (!validator.minLength(data.password, 6))
         throw new BadRequestException('password');
-
       users.password = data.password;
     }
     return await users.save();
   }
 
+  // forgotPassword service
   async forgotPassword(
     user: Model<User>,
     forgotPassword: ForgotPasswordUserDto,
