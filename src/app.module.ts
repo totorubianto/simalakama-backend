@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from './config/config.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
-import { MailService } from './mail/mail.service'
+
 @Module({
   imports: [
     AuthModule,
@@ -20,7 +20,15 @@ import { MailService } from './mail/mail.service'
     }),
     MailerModule.forRootAsync({
       useFactory: () => ({
-        transport: 'smtps://user@domain.com:pass@smtp.domain.com',
+        transport: {
+          host: process.env.MAIL_HOST,
+          port: Number(process.env.MAIL_PORT),
+          secure: false, // true for 465, false for other ports
+          auth: {
+              user: process.env.MAIL_USERNAME,
+              pass: process.env.MAIL_PASSWORD
+          }
+        },
         defaults: {
           from:'"nest-modules" <modules@nestjs.com>',
         },
@@ -35,7 +43,7 @@ import { MailService } from './mail/mail.service'
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, MailService],
+  providers: [AppService],
   
 })
 
