@@ -12,12 +12,15 @@ import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
     AuthModule,
     UsersModule,
     ConfigModule,
-    MongooseModule.forRoot(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`, {
-      useCreateIndex: true,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-    }),
+    MongooseModule.forRoot(
+      `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+      {
+        useCreateIndex: true,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+      },
+    ),
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {
@@ -25,12 +28,12 @@ import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
           port: Number(process.env.MAIL_PORT),
           secure: false, // true for 465, false for other ports
           auth: {
-              user: process.env.MAIL_USERNAME,
-              pass: process.env.MAIL_PASSWORD
-          }
+            user: process.env.MAIL_USERNAME,
+            pass: process.env.MAIL_PASSWORD,
+          },
         },
         defaults: {
-          from:'"nest-modules" <modules@nestjs.com>',
+          from: '"nest-modules" <modules@nestjs.com>',
         },
         template: {
           dir: __dirname + '/templates',
@@ -44,7 +47,5 @@ import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
   ],
   controllers: [AppController],
   providers: [AppService],
-  
 })
-
 export class AppModule {}

@@ -14,7 +14,6 @@ export class RolesGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
-
     if (!roles) {
       return true;
     }
@@ -23,7 +22,7 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('anda belum login');
     }
     const user = JWT(req.headers['authorization']);
-
     return roles.some(role => role === user.role);
   }
+  
 }

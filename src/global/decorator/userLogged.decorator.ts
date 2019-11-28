@@ -7,6 +7,5 @@ export const UserCustom = createParamDecorator((data: any, req) => {
   const dataToken = JWT(notBearerToken);
   const role = [];
   role.push(dataToken.role);
-
   return dataToken;
 });
