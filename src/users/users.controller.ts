@@ -73,13 +73,11 @@ export class UsersController {
   }
 
   // Forgot Password
-  @Post('forgot-password/:id')
-  @UseGuards(AuthGuard())
+  @Post('forgot-password/')
   forgot(
-    @UserCustom() user: any,
-    @Param('id') param: ForgotPasswordUserDto,
+    @Body() forgotPasswordUserDto: ForgotPasswordUserDto
   ): Promise<any[]> {
-    return this.usersService.forgotPassword(user, param);
+    return this.usersService.forgotPassword(forgotPasswordUserDto);
   }
 
   // uploadAvatar

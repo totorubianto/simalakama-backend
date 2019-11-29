@@ -7,11 +7,15 @@ import * as fs from 'fs';
 import { dirname } from 'path';
 import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 import { Validator } from 'class-validator';
+import { MailerService } from '@nest-modules/mailer'
 const validator = new Validator();
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private userModel: Model<User>,
+    private readonly mailerService: MailerService
+  ) {}
 
   //create service
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -61,11 +65,23 @@ export class UsersService {
 
   // forgotPassword service
   async forgotPassword(
-    user: Model<User>,
     forgotPassword: ForgotPasswordUserDto,
   ): Promise<any> {
     console.log(forgotPassword);
-    let users: Model<User> = await this.findById(user._id);
+    this
+      .mailerService
+      .sendMail({
+        to: 'toto.rubianto.17@gmail.com',
+        from: 'noreply@nestjs.com',
+        subject: 'Testing Nest Mailermodule with template ✔',
+        template: 'welcome', // The `.pug` or `.hbs` extension is appended automatically.
+        context: {  // Data to be sent to template engine.
+          code: 'cf1a3f828287',
+          username: 'john doe',
+        },
+      })
+      .then(() => {})
+      .catch(() => {});
     return { message: 'ok' };
   }
 
