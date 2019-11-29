@@ -29,8 +29,8 @@ import {
 } from '../global/filter/img-upload.filter';
 import { AuthService } from '../auth/auth.service';
 import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
-import { ForgotPasswordUserDto } from "./dto/forgot-password-user.dto"
-import { VerificationService } from '../verification/verification.service'
+import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
+import { VerificationService } from '../verification/verification.service';
 @Controller('users')
 @UsePipes(ValidationPipe)
 @UseFilters(HttpExceptionFilter)
@@ -40,7 +40,7 @@ export class UsersController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
-    private verificationService: VerificationService
+    private verificationService: VerificationService,
   ) {}
 
   // @Register
@@ -74,27 +74,25 @@ export class UsersController {
     return this.usersService.findById(user._id);
   }
 
-  // Forgot Password
+  // Request Forgot Password
   @Post('request-forgot-password/')
   requestForgotPassword(
-    @Body() forgotPasswordUserDto: ForgotPasswordUserDto
+    @Body() forgotPasswordUserDto: ForgotPasswordUserDto,
   ): Promise<any> {
     return this.usersService.requestForgotPassword(forgotPasswordUserDto);
   }
 
-   // Forgot Password
-   @Get('verify/:token')
-   verifyForgotPassword(
-     @Param('token') token: string
-   ): Promise<any> {
-     return this.verificationService.verify(token);
-   }
+  // Verify Password
+  @Get('verify/:token')
+  verifyForgotPassword(@Param('token') token: string): Promise<any> {
+    return this.verificationService.verify(token);
+  }
 
-   // Forgot Password
+  // Forgot Password
   @Post('forgot-password/:token')
   forgotPassword(
     @Param('token') token: string,
-    @Body() updateForgotPasswordUserDto: UpdateForgotPasswordUserDto
+    @Body() updateForgotPasswordUserDto: UpdateForgotPasswordUserDto,
   ): Promise<any> {
     return this.usersService.forgotPassword(updateForgotPasswordUserDto, token);
   }

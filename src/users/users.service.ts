@@ -6,11 +6,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as fs from 'fs';
 import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 import { Validator } from 'class-validator';
-import { MailerService } from '@nest-modules/mailer'
+import { MailerService } from '@nest-modules/mailer';
 import * as uuidv1 from 'uuid/v1';
-import { VerificationService } from '../verification/verification.service'
-import { Verification } from '../verification/interfaces/verification.interface'
-import { Verify } from 'crypto';
+import { VerificationService } from '../verification/verification.service';
+import { Verification } from '../verification/interfaces/verification.interface';
 import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
 const validator = new Validator();
 
@@ -19,7 +18,7 @@ export class UsersService {
   constructor(
     @InjectModel('User') private userModel: Model<User>,
     private readonly mailerService: MailerService,
-    private readonly verificationService: VerificationService
+    private readonly verificationService: VerificationService,
   ) {}
 
   //create service
@@ -68,37 +67,48 @@ export class UsersService {
     return await users.save();
   }
 
-  // forgotPassword service
+  // requestForgotPassword service
   async requestForgotPassword(
     forgotPassword: ForgotPasswordUserDto,
   ): Promise<any> {
-    const email = {email:forgotPassword.email}
-    const user:Model<User> = await this.findOne(email)
-    const data = {email:forgotPassword.email , name:"FORGOT_PASSWORD", description:"FORGOT PASSWORD", token:uuidv1()}
-    const verification = await this.verificationService.create(data)
-    console.log(verification.token)
+    const email = { email: forgotPassword.email };
+    const user: Model<User> = await this.findOne(email);
+    const data = {
+      email: forgotPassword.email,
+      name: 'FORGOT_PASSWORD',
+      description: 'FORGOT PASSWORD',
+      token: uuidv1(),
+    };
+    const verification = await this.verificationService.create(data);
+    console.log(verification.token);
     await this.mailerService.sendMail({
-        to: forgotPassword.email,
-        from: 'noreply@nestjs.com',
-        subject: 'Simalakama Forgot Password ✔',
-        template: 'forgotPassword.html', // The `.pug` or `.hbs` extension is appended automatically.
-        context: {  // Data to be sent to template engine.
-          to: user.name,
-          token: uuidv1(),
-          address: `${process.env.APP_URL}/users/verify/${verification.token}`
-        },
-    })
+      to: forgotPassword.email,
+      from: 'noreply@nestjs.com',
+      subject: 'Simalakama Forgot Password ✔',
+      template: 'forgotPassword.html', // The `.pug` or `.hbs` extension is appended automatically.
+      context: {
+        // Data to be sent to template engine.
+        to: user.name,
+        token: uuidv1(),
+        address: `${process.env.APP_URL}/users/verify/${verification.token}`,
+      },
+    });
     return { message: 'ok' };
   }
 
-
-  async forgotPassword(forgotPasswordUserDto: UpdateForgotPasswordUserDto,token:string):Promise<User>{
-    let verify:Model<Verification> = await this.verificationService.verify(token)
-    const email = {email: verify.email};
-    let user:Model<User> = await this.userModel.findOne(email)
-    user.password = forgotPasswordUserDto.newPassword
-    await user.save()
-    return user
+  // forgotPassword Service
+  async forgotPassword(
+    forgotPasswordUserDto: UpdateForgotPasswordUserDto,
+    token: string,
+  ): Promise<User> {
+    let verify: Model<Verification> = await this.verificationService.verify(
+      token,
+    );
+    const email = { email: verify.email };
+    let user: Model<User> = await this.userModel.findOne(email);
+    user.password = forgotPasswordUserDto.newPassword;
+    await user.save();
+    return user;
   }
 
   // upload user avatar service
