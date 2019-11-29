@@ -71,10 +71,10 @@ export class UsersService {
     this
       .mailerService
       .sendMail({
-        to: 'toto.rubianto.17@gmail.com',
+        to: forgotPassword.email,
         from: 'noreply@nestjs.com',
-        subject: 'Testing Nest Mailermodule with template ✔',
-        template: 'email.html', // The `.pug` or `.hbs` extension is appended automatically.
+        subject: 'Simalakama Forgot Password ✔',
+        template: 'forgotPassword.html', // The `.pug` or `.hbs` extension is appended automatically.
         context: {  // Data to be sent to template engine.
           code: 'cf1a3f828287',
           username: 'john doe',
