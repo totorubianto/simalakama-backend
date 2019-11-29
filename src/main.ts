@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import { ConfigService } from './config/config.service'
+import { ConfigService } from './config/config.service';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -10,7 +10,7 @@ async function bootstrap() {
   app.enableCors();
   app.use(cookieParser());
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.listen(process.env.PORT || app.get(ConfigService).getInt('APP_PORT'))
+  app.listen(process.env.PORT || app.get(ConfigService).getInt('APP_PORT'));
 }
 
 bootstrap();
