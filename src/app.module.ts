@@ -36,7 +36,7 @@ import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
           from: '"nest-modules" <modules@nestjs.com>',
         },
         template: {
-          dir: __dirname + '/templates',
+          dir: __dirname + '/../views/templates/',
           adapter: new HandlebarsAdapter(), // or new PugAdapter()
           options: {
             strict: true,
