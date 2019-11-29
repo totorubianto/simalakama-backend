@@ -29,7 +29,7 @@ import {
 } from '../global/filter/img-upload.filter';
 import { AuthService } from '../auth/auth.service';
 import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
-
+import { VerificationService } from '../verification/verification.service'
 @Controller('users')
 @UsePipes(ValidationPipe)
 @UseFilters(HttpExceptionFilter)
@@ -39,6 +39,7 @@ export class UsersController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
+    private verificationService: VerificationService
   ) {}
 
   // @Register
@@ -73,12 +74,20 @@ export class UsersController {
   }
 
   // Forgot Password
-  @Post('forgot-password/')
-  forgot(
+  @Post('request-forgot-password/')
+  forgotPassword(
     @Body() forgotPasswordUserDto: ForgotPasswordUserDto
-  ): Promise<any[]> {
-    return this.usersService.forgotPassword(forgotPasswordUserDto);
+  ): Promise<any> {
+    return this.usersService.requestForgotPassword(forgotPasswordUserDto);
   }
+
+   // Forgot Password
+   @Get('verify/:token')
+   verifyForgotPassword(
+     @Param('token') token: string
+   ): Promise<any> {
+     return this.verificationService.verify(token);
+   }
 
   // uploadAvatar
   @Post('upload-avatar')

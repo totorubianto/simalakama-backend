@@ -14,4 +14,9 @@ export class VerificationService {
         let createdUser = new this.verificationModel(createVerificationDto);
         return await createdUser.save();
     }
+
+    async verify(token):Promise<Verification>{
+        const verify = this.verificationModel.findOne({token:token})
+        return verify
+    }
 }

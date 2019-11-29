@@ -9,6 +9,7 @@ import { Validator } from 'class-validator';
 import { MailerService } from '@nest-modules/mailer'
 import * as uuidv1 from 'uuid/v1';
 import { VerificationService } from '../verification/verification.service'
+import { Verification } from '../verification/interfaces/verification.interface'
 const validator = new Validator();
 
 @Injectable()
@@ -66,14 +67,13 @@ export class UsersService {
   }
 
   // forgotPassword service
-  async forgotPassword(
+  async requestForgotPassword(
     forgotPassword: ForgotPasswordUserDto,
   ): Promise<any> {
     const email = {email:forgotPassword.email}
     const user:Model<User> = await this.findOne(email)
     const data = {email:forgotPassword.email , name:"FORGOT_PASSWORD", description:"FORGOT PASSWORD", token:uuidv1()}
     const verification = await this.verificationService.create(data)
-    console.log(`${process.env.APP_URL}/users/forgot-password/verify/${verification.token}`)
     await this.mailerService.sendMail({
         to: forgotPassword.email,
         from: 'noreply@nestjs.com',
@@ -82,10 +82,16 @@ export class UsersService {
         context: {  // Data to be sent to template engine.
           to: user.name,
           token: uuidv1(),
-          address: `${process.env.APP_URL}/users/forgot-password/verify/${verification.token}`
+          address: `${process.env.APP_URL}/users/forgot-password/${verification.token}`
         },
     })
     return { message: 'ok' };
+  }
+
+  async verifyForgotPassword(token:string):Promise<User>{
+    let verify:Model<Verification> = await this.verificationService.verify(token);
+    console.log(verify)
+    return verify
   }
 
   // upload user avatar service
