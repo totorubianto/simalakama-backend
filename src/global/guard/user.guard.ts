@@ -24,5 +24,4 @@ export class RolesGuard implements CanActivate {
     const user = JWT(req.headers['authorization']);
     return roles.some(role => role === user.role);
   }
-  
 }

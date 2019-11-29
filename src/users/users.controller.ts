@@ -28,7 +28,8 @@ import {
   imageFileFilter,
 } from '../global/filter/img-upload.filter';
 import { AuthService } from '../auth/auth.service';
-import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
+import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
+import { ForgotPasswordUserDto } from "./dto/forgot-password-user.dto"
 import { VerificationService } from '../verification/verification.service'
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -75,7 +76,7 @@ export class UsersController {
 
   // Forgot Password
   @Post('request-forgot-password/')
-  forgotPassword(
+  requestForgotPassword(
     @Body() forgotPasswordUserDto: ForgotPasswordUserDto
   ): Promise<any> {
     return this.usersService.requestForgotPassword(forgotPasswordUserDto);
@@ -88,6 +89,15 @@ export class UsersController {
    ): Promise<any> {
      return this.verificationService.verify(token);
    }
+
+   // Forgot Password
+  @Post('forgot-password/:token')
+  forgotPassword(
+    @Param('token') token: string,
+    @Body() updateForgotPasswordUserDto: UpdateForgotPasswordUserDto
+  ): Promise<any> {
+    return this.usersService.forgotPassword(updateForgotPasswordUserDto, token);
+  }
 
   // uploadAvatar
   @Post('upload-avatar')
