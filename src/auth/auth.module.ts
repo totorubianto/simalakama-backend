@@ -7,12 +7,13 @@ import { PassportModule } from '@nestjs/passport';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthSchema } from './schema/auth.schema';
 
+const passportModule = PassportModule.register({ defaultStrategy: 'jwt', session: false });
 @Injectable()
 @Module({
   imports: [
     forwardRef(() => UsersModule),
+    passportModule,
     MongooseModule.forFeature([{ name: 'Auth', schema: AuthSchema }]),
-    PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
       secret: 'rahasia',
       signOptions: {
@@ -20,7 +21,7 @@ import { AuthSchema } from './schema/auth.schema';
       },
     }),
   ],
-  exports:[AuthService],
+  exports:[AuthService, passportModule],
   providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

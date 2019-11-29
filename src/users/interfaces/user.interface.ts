@@ -3,5 +3,5 @@ export interface User {
     balance: number;
     name: string;
     password: string;
-  }
+}
   

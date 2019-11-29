@@ -4,17 +4,19 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './interfaces/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as fs from 'fs';
-import { dirname } from 'path';
 import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 import { Validator } from 'class-validator';
 import { MailerService } from '@nest-modules/mailer'
+import * as uuidv1 from 'uuid/v1';
+import { VerificationService } from '../verification/verification.service'
 const validator = new Validator();
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel('User') private userModel: Model<User>,
-    private readonly mailerService: MailerService
+    private readonly mailerService: MailerService,
+    private readonly verificationService: VerificationService
   ) {}
 
   //create service
@@ -26,8 +28,8 @@ export class UsersService {
   }
 
   // findall user service
-  async findOneByEmail(email): Promise<User> {
-    return await this.userModel.findOne({ email: email });
+  async findOne(query): Promise<User> {
+    return await this.userModel.findOne(query);
   }
 
   // findall user service
@@ -67,21 +69,22 @@ export class UsersService {
   async forgotPassword(
     forgotPassword: ForgotPasswordUserDto,
   ): Promise<any> {
-    console.log(forgotPassword);
-    this
-      .mailerService
-      .sendMail({
+    const email = {email:forgotPassword.email}
+    const user:Model<User> = await this.findOne(email)
+    const data = {email:forgotPassword.email , name:"FORGOT_PASSWORD", description:"FORGOT PASSWORD", token:uuidv1()}
+    const verification = await this.verificationService.create(data)
+    console.log(`${process.env.APP_URL}/users/forgot-password/verify/${verification.token}`)
+    await this.mailerService.sendMail({
         to: forgotPassword.email,
         from: 'noreply@nestjs.com',
         subject: 'Simalakama Forgot Password ✔',
         template: 'forgotPassword.html', // The `.pug` or `.hbs` extension is appended automatically.
         context: {  // Data to be sent to template engine.
-          code: 'cf1a3f828287',
-          username: 'john doe',
+          to: user.name,
+          token: uuidv1(),
+          address: `${process.env.APP_URL}/users/forgot-password/verify/${verification.token}`
         },
-      })
-      .then(() => {})
-      .catch(error => console.log(error));
+    })
     return { message: 'ok' };
   }
 

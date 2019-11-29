@@ -27,9 +27,10 @@ export class AuthService {
 
   // validation user by password
   async validateUserByPassword(loginAttempt: LoginUserDto) {
-    let userToAttempt = await this.usersService.findOneByEmail(
-      loginAttempt.email,
-    );
+    const email = {
+      email : loginAttempt.email
+    }
+    let userToAttempt = await this.usersService.findOne(email);
     if (!userToAttempt) throw new BadRequestException('email tidak ditemukan');
     const isMatch = await bcrypt.compare(
       loginAttempt.password,

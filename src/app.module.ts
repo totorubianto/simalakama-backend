@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from './config/config.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
+import { VerificationModule } from './verification/verification.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
         },
       }),
     }),
+    VerificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
