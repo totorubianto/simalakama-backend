@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import * as moment from 'moment';
 
-const exp = Date.now() + 5*60000
 export const VerificationSchema = new mongoose.Schema(
   {
     email: {
@@ -16,19 +16,12 @@ export const VerificationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    token:{
+    token: {
       type: String,
-      required:true
+      required: true,
     },
-    date: {
-      createdAt: {
-        type : Date,
-        default : Date.now()
-      },
-      exp:{
-        type: Date,
-        default: exp
-      }
-    }
+
+    expiredAt: Date,
   },
+  { timestamps: true },
 );

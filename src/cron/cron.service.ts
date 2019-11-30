@@ -8,7 +8,7 @@ export class CronService {
 
   async runTask() {
     console.log('Cron service running...');
-    cron.schedule('*/5 * * * *', async () => {
+    cron.schedule('*/1 * * * *', async () => {
       console.log(
         new Date().toLocaleDateString(),
         new Date().toLocaleTimeString(),
