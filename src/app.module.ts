@@ -7,12 +7,15 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from './config/config.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { VerificationModule } from './verification/verification.module';
+import { CronService } from './cron/cron.service';
+import { CronModule } from './cron/cron.module';
 
 @Module({
   imports: [
     AuthModule,
     UsersModule,
     ConfigModule,
+    CronModule,
     MongooseModule.forRoot(
       `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
       {
@@ -50,4 +53,9 @@ import { VerificationModule } from './verification/verification.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly cronService: CronService) {}
+  async onApplicationBootstrap() {
+    this.cronService.runTask();
+  }
+}

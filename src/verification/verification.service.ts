@@ -27,6 +27,13 @@ export class VerificationService {
     return verify;
   }
 
+  async clearExpired() {
+    await this.verificationModel.deleteMany({
+      expiredAt: { $lte: new Date() },
+    });
+    return true;
+  }
+
   async get(query) {
     const verify = this.verificationModel.find(query);
     if (verify.length === 0)
