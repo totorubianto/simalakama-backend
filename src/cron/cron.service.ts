@@ -8,11 +8,11 @@ export class CronService {
 
   async runTask() {
     console.log('Cron service running...');
-    cron.schedule('*/1 * * * *', async () => {
+    cron.schedule('*/5 * * * *', async () => {
       console.log(
         new Date().toLocaleDateString(),
         new Date().toLocaleTimeString(),
-        'Clearing expired verification token...',
+        '🧼Clearing expired verification token...',
       );
       this.verificationsService.clearExpired();
     });
