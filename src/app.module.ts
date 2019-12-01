@@ -10,6 +10,12 @@ import { VerificationModule } from './verification/verification.module';
 import { CronService } from './cron/cron.service';
 import { CronModule } from './cron/cron.module';
 
+console.log(
+  'mongodb+srv://simalakama:<password>@cluster0-33uxh.mongodb.net/test?retryWrites=true&w=majority',
+);
+console.log(
+  `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/test?retryWrites=true&w=majority`,
+);
 @Module({
   imports: [
     AuthModule,
@@ -17,7 +23,8 @@ import { CronModule } from './cron/cron.module';
     ConfigModule,
     CronModule,
     MongooseModule.forRoot(
-      `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+      // mongodb+srv://simalakama:<password>@cluster0-33uxh.mongodb.net/test?retryWrites=true&w=majority
+      `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/test?retryWrites=true&w=majority`,
       {
         useCreateIndex: true,
         useNewUrlParser: true,
