@@ -10,9 +10,6 @@ import { VerificationModule } from './verification/verification.module';
 import { CronService } from './cron/cron.service';
 import { CronModule } from './cron/cron.module';
 
-console.log(
-  `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/test?retryWrites=true&w=majority`,
-);
 @Module({
   imports: [
     AuthModule,
