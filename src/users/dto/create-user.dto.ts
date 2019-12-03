@@ -5,9 +5,11 @@ import {
   MinLength,
   IsNotEmpty,
 } from 'class-validator';
+import { IsUnique } from '../../global/validators/IsUnique';
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
+  @IsUnique('email', 'user')
   readonly email: string;
   @IsString()
   @MinLength(6)
