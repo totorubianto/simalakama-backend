@@ -27,10 +27,7 @@ export class AuthService {
 
   // validation user by password
   async validateUserByPassword(loginAttempt: LoginUserDto) {
-    const email = {
-      email : loginAttempt.email
-    }
-    let userToAttempt = await this.usersService.findOne(email);
+    let userToAttempt = await this.usersService.findOne({email: loginAttempt.email});
     if (!userToAttempt) throw new BadRequestException('email tidak ditemukan');
     const isMatch = await bcrypt.compare(
       loginAttempt.password,
@@ -38,13 +35,13 @@ export class AuthService {
     );
     if (!isMatch)
       throw new BadRequestException('password yang anda masukan salah');
-
-    const data = this.createJwtPayload(userToAttempt);
-    let jwtData = JWT(data.token);
+     
+    const [accessToken, refreshToken] = this.createJwtPayload(userToAttempt);
     const saveToken = {
-      token: data.token,
-      user: jwtData._id,
-      expiresIn: jwtData.exp,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      actor: userToAttempt._id,
+      actorModel: userToAttempt.role,
     };
     const newItem = new this.authModel(saveToken);
     const result = newItem.save();
@@ -54,7 +51,7 @@ export class AuthService {
   // find token from header and check of auth model
   async findTokenEmail(token: string): Model<Auth> {
     const tokenNotBearer = token.replace('Bearer ', '');
-    const data = await this.authModel.findOne({ token: tokenNotBearer });
+    const data = await this.authModel.findOne({ accessToken: tokenNotBearer });
     return data;
   }
 
@@ -63,7 +60,7 @@ export class AuthService {
     let user = await this.findTokenEmail(token);
     if (!user)
       throw new UnauthorizedException('Session login anda sudah habis');
-    const data = JWT(user.token);
+    const data = JWT(user.accessToken);
     const expiresIn = data.exp * 1000;
     let compareDate: boolean = expiresIn > Date.now();
     if (!compareDate) {
@@ -74,17 +71,15 @@ export class AuthService {
   }
 
   // create jwt payload
-  createJwtPayload(user) {
-    let data: JwtPayload = {
-      _id: user._id,
-      email: user.email,
-      role: user.role,
-    };
-    let jwt = this.jwtService.sign(data);
-
-    return {
-      expiresIn: 3600,
-      token: jwt,
-    };
+  createJwtPayload(payload:any): [string, string] {
+    const payloadData = {
+      _id:payload._id,
+      email:payload.email,
+      role:payload.role,
+      name:payload.name
+    }
+    const accessToken = this.jwtService.sign(payloadData, { expiresIn: process.env.JWT_TTL });
+    const refreshToken = this.jwtService.sign({}, { expiresIn: process.env.JWT_REFRESH_TTL });
+    return [accessToken, refreshToken];
   }
 }

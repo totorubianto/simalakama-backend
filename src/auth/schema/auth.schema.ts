@@ -2,17 +2,17 @@ import * as mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 export const AuthSchema = new mongoose.Schema({
-  token: {
+  accessToken: {
     type: String,
     required: true,
   },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'users',
+  refreshToken: {
+    type: String,
     required: true,
   },
-  expiresIn: {
-    type: Number,
+  actor: {
+    type: Schema.Types.ObjectId,
+    ref: 'users',
     required: true,
   },
 });
