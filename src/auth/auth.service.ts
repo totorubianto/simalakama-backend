@@ -29,6 +29,12 @@ export class AuthService {
   async validateUserByPassword(loginAttempt: LoginUserDto) {
     let userToAttempt = await this.usersService.findOne({email: loginAttempt.email});
     if (!userToAttempt) throw new BadRequestException('email tidak ditemukan');
+    const payload = {
+      _id : userToAttempt._id,
+      name : userToAttempt.name,
+      email : userToAttempt.email,
+      role : userToAttempt.role
+    }
     const isMatch = await bcrypt.compare(
       loginAttempt.password,
       userToAttempt.password,
@@ -36,7 +42,7 @@ export class AuthService {
     if (!isMatch)
       throw new BadRequestException('password yang anda masukan salah');
      
-    const [accessToken, refreshToken] = this.createJwtPayload(userToAttempt);
+    const [accessToken, refreshToken] = this.generateToken(payload);
     const saveToken = {
       accessToken: accessToken,
       refreshToken: refreshToken,
@@ -56,29 +62,41 @@ export class AuthService {
   }
 
   // validate user by jwt
-  async validateUserByJwt(payload: JwtPayload, token: string) {
-    let user = await this.findTokenEmail(token);
-    if (!user)
+  async validateUserByJwt(payload:any, accessToken: string) {
+    console.log(payload)
+    let auth = await this.findTokenEmail(accessToken);
+    if (!auth)
       throw new UnauthorizedException('Session login anda sudah habis');
-    const data = JWT(user.accessToken);
+    const data = JWT(auth.accessToken);
     const expiresIn = data.exp * 1000;
     let compareDate: boolean = expiresIn > Date.now();
     if (!compareDate) {
-      await this.authModel.deleteOne(token);
+      await this.authModel.deleteOne(accessToken);
       throw new UnauthorizedException('Session login anda sudah habis');
     }
-    return this.createJwtPayload(payload);
+    const payloadData = this.getPayloadFromToken(accessToken);
+    const [nAccessToken, nRefreshToken] = this.generateToken(payloadData);
+    auth.accessToken = nAccessToken;
+    auth.refreshToken = nRefreshToken;
+    await auth.save();
+    return auth;
   }
 
-  // create jwt payload
-  createJwtPayload(payload:any): [string, string] {
-    const payloadData = {
-      _id:payload._id,
-      email:payload.email,
-      role:payload.role,
-      name:payload.name
+  getPayloadFromToken(token: string): any {
+    const tokenNotBearer = token.replace('Bearer ', '');
+    let exceptions = ['iat', 'exp'];
+    let payload = this.jwtService.decode(tokenNotBearer);
+    if (typeof payload == 'object') {
+        for (var i = exceptions.length - 1; i >= 0; i--) {
+            delete payload[exceptions[i]];
+        }
     }
-    const accessToken = this.jwtService.sign(payloadData, { expiresIn: process.env.JWT_TTL });
+    return payload;
+}
+
+  // create jwt payload
+  generateToken(payload: any = {}): [string, string] {
+    const accessToken = this.jwtService.sign(payload, { expiresIn: process.env.JWT_TTL });
     const refreshToken = this.jwtService.sign({}, { expiresIn: process.env.JWT_REFRESH_TTL });
     return [accessToken, refreshToken];
   }
