@@ -38,6 +38,7 @@ export class UsersService {
     let user = await this.userModel.findOne({ email: data.email }).exec();
     if (!user) throw new BadRequestException("Invalid Credentials!");
     let payload = {
+      _id: user._id,
       actor : user._id,
       actorModel : user.role,
     }

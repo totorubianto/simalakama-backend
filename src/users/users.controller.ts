@@ -71,7 +71,7 @@ export class UsersController {
   @Get('me')
   @UseGuards(AuthGuard())
   me(@UserCustom() user: any): Promise<any[]> {
-    return this.usersService.findById(user.actor);
+    return this.usersService.findById(user._id);
   }
 
   // Request Forgot Password
