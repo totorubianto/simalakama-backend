@@ -14,7 +14,7 @@ import { VerificationModule } from '../verification/verification.module'
 @Module({
   imports: [
     VerificationModule,
-    forwardRef(() => AuthModule),
+    AuthModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
   ],
   exports: [UsersService],

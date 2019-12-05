@@ -11,7 +11,6 @@ const passportModule = PassportModule.register({ defaultStrategy: 'jwt', session
 @Injectable()
 @Module({
   imports: [
-    forwardRef(() => UsersModule),
     passportModule,
     MongooseModule.forFeature([{ name: 'Auth', schema: AuthSchema }]),
     JwtModule.register({ secret: "rahasia"}),

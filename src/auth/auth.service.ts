@@ -1,15 +1,10 @@
 import {
   Injectable,
   UnauthorizedException,
-  Request,
-  Response,
-  HttpException,
-  HttpStatus,
   BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from '../users/dto/login-user.dto';
-import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import * as JWT from 'jwt-decode';
 import { Auth } from './interfaces/jwt.interface';
@@ -21,33 +16,18 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
   constructor(
     @InjectModel('Auth') private readonly authModel: Model<Auth>,
-    private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
 
   // validation user by password
-  async validateUserByPassword(loginAttempt: LoginUserDto) {
-    let userToAttempt = await this.usersService.findOne({email: loginAttempt.email});
-    if (!userToAttempt) throw new BadRequestException('email tidak ditemukan');
-    const payload = {
-      _id : userToAttempt._id,
-      name : userToAttempt.name,
-      email : userToAttempt.email,
-      role : userToAttempt.role
-    }
-    const isMatch = await bcrypt.compare(
-      loginAttempt.password,
-      userToAttempt.password,
-    );
-    if (!isMatch)
-      throw new BadRequestException('password yang anda masukan salah');
-     
+  async login(payload: any) {   
+    console.log(payload)  
     const [accessToken, refreshToken] = this.generateToken(payload);
     const saveToken = {
       accessToken: accessToken,
       refreshToken: refreshToken,
-      actor: userToAttempt._id,
-      actorModel: userToAttempt.role,
+      actor: payload.actor,
+      actorModel: payload.actorModel
     };
     const newItem = new this.authModel(saveToken);
     const result = newItem.save();

@@ -11,6 +11,9 @@ import * as uuidv1 from 'uuid/v1';
 import { VerificationService } from '../verification/verification.service';
 import { Verification } from '../verification/interfaces/verification.interface';
 import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
+import { AuthService } from '../auth/auth.service'
+import { LoginUserDto } from './dto/login-user.dto';
+
 const validator = new Validator();
 
 @Injectable()
@@ -19,6 +22,7 @@ export class UsersService {
     @InjectModel('User') private userModel: Model<User>,
     private readonly mailerService: MailerService,
     private readonly verificationService: VerificationService,
+    private readonly authService: AuthService,
   ) {}
 
   //create service
@@ -27,6 +31,18 @@ export class UsersService {
     if (user) throw new BadRequestException('user sudah ada');
     let createdUser = new this.userModel(createUserDto);
     return await createdUser.save();
+  }
+
+  //login
+  async login(data : LoginUserDto){
+    let user = await this.userModel.findOne({ email: data.email }).exec();
+    if (!user) throw new BadRequestException("Invalid Credentials!");
+    let payload = {
+      actor : user._id,
+      actorModel : user.role,
+    }
+    const res = await this.authService.login(payload);
+    return res
   }
 
   // findall user service

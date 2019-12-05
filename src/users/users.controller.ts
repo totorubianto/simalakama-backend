@@ -51,7 +51,7 @@ export class UsersController {
   // @Login
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto) {
-    return await this.authService.validateUserByPassword(loginUserDto);
+    return await this.usersService.login(loginUserDto);
   }
 
   // @uUpdate Profile
@@ -71,7 +71,7 @@ export class UsersController {
   @Get('me')
   @UseGuards(AuthGuard())
   me(@UserCustom() user: any): Promise<any[]> {
-    return this.usersService.findById(user._id);
+    return this.usersService.findById(user.actor);
   }
 
   // Request Forgot Password
