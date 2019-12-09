@@ -83,7 +83,8 @@ export class AuthService {
 
   // create jwt payload
   generateToken(payload: any = {}): [string, string] {
-    const accessToken = this.jwtService.sign(payload, { expiresIn: process.env.JWT_TTL });
+    console.log(process.env.JWT_TTL)
+    const accessToken = this.jwtService.sign(payload, { expiresIn: 60*60*60 });
     const refreshToken = this.jwtService.sign({}, { expiresIn: process.env.JWT_REFRESH_TTL });
     return [accessToken, refreshToken];
   }

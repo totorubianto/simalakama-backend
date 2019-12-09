@@ -42,7 +42,7 @@ export class AuthMiddleware implements NestMiddleware {
             }
 
             req['user'] = user;
-            req['userType'] = decoded.type;
+            req['userType'] = decoded.actorModel;
 
             next();
         } else {

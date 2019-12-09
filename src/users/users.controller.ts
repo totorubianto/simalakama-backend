@@ -14,9 +14,8 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from '../global/decorator/guard.decorator';
 import { RolesGuard } from '../global/guard/user.guard';
-import { UserCustom } from '../global/decorator/userLogged.decorator';
+import { UserTypes } from '../global/decorator/userTypes';
 import { TransformInterceptor } from '../global/interceptor/transform.interceptor';
 import { HttpExceptionFilter } from '../global/filter/http-exception.filter';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -31,11 +30,12 @@ import { AuthService } from '../auth/auth.service';
 import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
 import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 import { VerificationService } from '../verification/verification.service';
+import { User } from '../global/decorator/user'
 @Controller('users')
 @UsePipes(ValidationPipe)
 @UseFilters(HttpExceptionFilter)
 @UseInterceptors(TransformInterceptor)
-@UseGuards(RolesGuard)
+
 export class UsersController {
   constructor(
     private usersService: UsersService,
@@ -57,7 +57,8 @@ export class UsersController {
   // @uUpdate Profile
   @Post('update')
   @UseGuards(AuthGuard())
-  async update(@Body() updateUserDto: UpdateUserDto, @UserCustom() user: any) {
+  async update(@Body() updateUserDto: UpdateUserDto, @User() user: any) {
+    console.log(user)
     return await this.usersService.updateProfile(updateUserDto, user);
   }
 
@@ -69,8 +70,8 @@ export class UsersController {
 
   // @me
   @Get('me')
-  @UseGuards(AuthGuard())
-  me(@UserCustom() user: any): Promise<any[]> {
+  me(@User() user: any): Promise<any[]> {
+    console.log(user)
     return this.usersService.findById(user._id);
   }
 
@@ -99,8 +100,6 @@ export class UsersController {
 
   // uploadAvatar
   @Post('upload-avatar')
-  @UseGuards(AuthGuard())
-  @Roles('admin', 'user')
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
@@ -110,7 +109,7 @@ export class UsersController {
       fileFilter: imageFileFilter,
     }),
   )
-  async uploadedFile(@UploadedFile() file, @UserCustom() user: any) {
+  async uploadedFile(@UploadedFile() file, @User() user: any) {
     return await this.usersService.uploadAvatar(file, user);
   }
 }
