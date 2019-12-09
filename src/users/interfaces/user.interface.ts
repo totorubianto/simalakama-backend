@@ -1,9 +1,9 @@
-export interface User {
-  _id?: string;
-  email: string;
-  role: string;
-  name: string;
-  password: string;
-  createdAt: string;
-  updatedAt: string;
+import { Document } from 'mongoose';
+export interface User extends Document{
+  readonly email: string;
+  readonly role: string;
+  readonly name: string;
+  readonly password: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
 }

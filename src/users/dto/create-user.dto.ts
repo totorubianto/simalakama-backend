@@ -9,7 +9,7 @@ import { IsUnique } from '../../global/validators/IsUnique';
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
-  // @IsUnique('email', 'user')
+  @IsUnique('email', 'user')
   readonly email: string;
   @IsString()
   @MinLength(6)

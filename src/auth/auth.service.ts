@@ -21,7 +21,6 @@ export class AuthService {
 
   // validation user by password
   async login(payload: any) {   
-    console.log(payload)  
     const [accessToken, refreshToken] = this.generateToken(payload);
     const saveToken = {
       accessToken: accessToken,

@@ -7,9 +7,10 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from './config/config.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { VerificationModule } from './verification/verification.module';
+import { IsUniqueConstraint } from './global/validators/IsUnique';
 import { CronService } from './cron/cron.service';
 import { CronModule } from './cron/cron.module';
-
+import { UserSchema } from './users/schema/user.schema'
 @Module({
   imports: [
     AuthModule,
@@ -25,6 +26,7 @@ import { CronModule } from './cron/cron.module';
         useFindAndModify: false,
       },
     ),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {
@@ -51,8 +53,9 @@ import { CronModule } from './cron/cron.module';
     VerificationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,IsUniqueConstraint],
 })
+
 export class AppModule {
   constructor(private readonly cronService: CronService) {}
   async onApplicationBootstrap() {
