@@ -61,6 +61,14 @@ export class AuthService {
     return auth;
   }
 
+  async verify(token: string) {
+      return this.jwtService.verify(token);
+  }
+
+  async findByToken(accessToken: string): Promise<Model<Auth>> {
+      return this.authModel.findOne({ accessToken: accessToken }).exec();
+  }
+
   getPayloadFromToken(token: string): any {
     const tokenNotBearer = token.replace('Bearer ', '');
     let exceptions = ['iat', 'exp'];

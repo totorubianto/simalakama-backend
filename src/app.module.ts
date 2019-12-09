@@ -1,4 +1,4 @@
-import { Module, MiddlewareConsumer } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,7 +10,11 @@ import { VerificationModule } from './verification/verification.module';
 import { IsUniqueConstraint } from './global/validators/IsUnique';
 import { CronService } from './cron/cron.service';
 import { CronModule } from './cron/cron.module';
-import { UserSchema } from './users/schema/user.schema'
+import { UserSchema } from './users/schema/user.schema';
+import { AuthMiddleware } from './global/middleware/auth.middleware';
+//import controller
+import { UsersController } from './users/users.controller'
+
 @Module({
   imports: [
     AuthModule,
@@ -53,11 +57,23 @@ import { UserSchema } from './users/schema/user.schema'
     VerificationModule,
   ],
   controllers: [AppController],
-  providers: [AppService,IsUniqueConstraint],
+  providers: [AppService, IsUniqueConstraint, AuthMiddleware],
 })
 
 export class AppModule {
   constructor(private readonly cronService: CronService) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+    .apply(AuthMiddleware)
+    .exclude(
+        // users
+        { path: 'users/login', method: RequestMethod.POST },
+        { path: 'users/register', method: RequestMethod.POST },
+    )
+    .forRoutes(
+        UsersController,  
+    );
+  }
   async onApplicationBootstrap() {
     this.cronService.runTask();
   }
