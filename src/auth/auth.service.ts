@@ -81,10 +81,15 @@ export class AuthService {
     return payload;
   }
 
-  //
+  //logout
   async logout(user) {
     const token = user.headers['authorization'].replace('Bearer ', '');
     return this.authModel.deleteOne({ accessToken: token });
+  }
+
+  //logout All
+  async logoutAll(user) {
+    return this.authModel.deleteMany({ actor: user._id });
   }
 
   // create jwt payload

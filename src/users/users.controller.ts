@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  UseGuards,
   UsePipes,
   UseInterceptors,
   UseFilters,
@@ -14,8 +13,6 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../global/guard/user.guard';
 import { UserTypes } from '../global/decorator/userTypes';
 import { TransformInterceptor } from '../global/interceptor/transform.interceptor';
 import { HttpExceptionFilter } from '../global/filter/http-exception.filter';
@@ -32,6 +29,7 @@ import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
 import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 import { VerificationService } from '../verification/verification.service';
 import { User } from '../global/decorator/user';
+
 @Controller('users')
 @UsePipes(ValidationPipe)
 @UseFilters(HttpExceptionFilter)
@@ -64,6 +62,12 @@ export class UsersController {
   @Post('logout')
   async logout(@Request() user: any) {
     return await this.authService.logout(user);
+  }
+
+  //logout
+  @Post('logout-all')
+  async logoutAll(@User() user: any) {
+    return await this.authService.logoutAll(user);
   }
 
   // @findAll
