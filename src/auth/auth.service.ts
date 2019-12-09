@@ -11,7 +11,7 @@ import { Auth } from './interfaces/jwt.interface';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-
+import { UserType } from '../global/enum/user.type';
 @Injectable()
 export class AuthService {
   constructor(
@@ -26,7 +26,7 @@ export class AuthService {
       accessToken: accessToken,
       refreshToken: refreshToken,
       actor: payload.actor,
-      actorModel: payload.actorModel,
+      actorModel: UserType.getModel(payload.actorModel),
     };
     const newItem = new this.authModel(saveToken);
     const result = newItem.save();
@@ -40,8 +40,8 @@ export class AuthService {
     return data;
   }
 
-  // validate user by jwt
-  async validateUserByJwt(payload: any, accessToken: string) {
+  // refresh token (deprecated)
+  async refresh(payload: any, accessToken: string) {
     console.log(payload);
     let auth = await this.findTokenEmail(accessToken);
     if (!auth)
@@ -61,14 +61,17 @@ export class AuthService {
     return auth;
   }
 
+  //verify token
   async verify(token: string) {
     return this.jwtService.verify(token);
   }
 
+  //find by token
   async findByToken(accessToken: string): Promise<Model<Auth>> {
     return this.authModel.findOne({ accessToken: accessToken }).exec();
   }
 
+  //get payload from token
   getPayloadFromToken(token: string): any {
     const tokenNotBearer = token.replace('Bearer ', '');
     let exceptions = ['iat', 'exp'];
