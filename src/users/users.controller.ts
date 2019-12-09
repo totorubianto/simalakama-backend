@@ -56,14 +56,12 @@ export class UsersController {
 
   // @uUpdate Profile
   @Post('update')
-  @UseGuards(AuthGuard())
   async update(@Body() updateUserDto: UpdateUserDto, @User() user: any) {
-    console.log(user)
     return await this.usersService.updateProfile(updateUserDto, user);
   }
 
   // @findAll
-  @Get()
+  @Get("find-all")
   findAll(): Promise<any[]> {
     return this.usersService.findAll(null);
   }

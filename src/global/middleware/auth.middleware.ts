@@ -30,19 +30,16 @@ export class AuthMiddleware implements NestMiddleware {
                 case UserType.ADMIN:
                     user = "coming soon"
                     break;
-                case UserType.MERCHANT:
-                    user = "coming soon"
-                    break;
                 case UserType.USER:
                     user = await this.usersService.findById(decoded._id);
                     break;
             }
             if (!user) {
-                throw new UnauthorizedException('Not authorized');
+                throw new UnauthorizedException('Not authorized', "middleware");
             }
 
             req['user'] = user;
-            req['userType'] = decoded.actorModel;
+            req['userType'] = decoded.actorModel ;
 
             next();
         } else {

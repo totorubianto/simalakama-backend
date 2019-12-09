@@ -1,8 +1,7 @@
-const UserEnum = ['ADMIN', 'USER', 'MERCHANT'];
+const UserEnum = ['ADMIN', 'USER'];
 class UserType {
     static ADMIN: string = 'ADMIN';
     static USER: string = 'USER';
-    static MERCHANT: string = 'MERCHANT';
 
     static getStr(en: string): string {
         switch (en) {
@@ -11,9 +10,6 @@ class UserType {
                 break;
             case "USER":
                 return 'User';
-                break;
-            case "MERCHANT":
-                return 'Merchant';
                 break;
             default:
                 return '';
@@ -28,9 +24,6 @@ class UserType {
                 break;
             case "USER":
                 return 'User';
-                break;
-            case "MERCHANT":
-                return 'Merchant';
                 break;
             default:
                 return '';

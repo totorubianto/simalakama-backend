@@ -63,6 +63,7 @@ export class UsersService {
 
   // updateProfile service
   async updateProfile(data: any, user: any): Promise<User> {
+    
     let users: Model<User> = await this.findById(user._id);
     if (data.email && data.email === users.email)
       throw new BadRequestException(
@@ -81,6 +82,7 @@ export class UsersService {
         throw new BadRequestException('password');
       users.password = data.password;
     }
+
     return await users.save();
   }
 
