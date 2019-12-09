@@ -30,12 +30,11 @@ import { AuthService } from '../auth/auth.service';
 import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
 import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 import { VerificationService } from '../verification/verification.service';
-import { User } from '../global/decorator/user'
+import { User } from '../global/decorator/user';
 @Controller('users')
 @UsePipes(ValidationPipe)
 @UseFilters(HttpExceptionFilter)
 @UseInterceptors(TransformInterceptor)
-
 export class UsersController {
   constructor(
     private usersService: UsersService,
@@ -61,7 +60,7 @@ export class UsersController {
   }
 
   // @findAll
-  @Get("find-all")
+  @Get('find-all')
   findAll(): Promise<any[]> {
     return this.usersService.findAll(null);
   }
@@ -69,7 +68,7 @@ export class UsersController {
   // @me
   @Get('me')
   me(@User() user: any): Promise<any[]> {
-    console.log(user)
+    console.log(user);
     return this.usersService.findById(user._id);
   }
 

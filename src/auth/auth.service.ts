@@ -20,13 +20,13 @@ export class AuthService {
   ) {}
 
   // validation user by password
-  async login(payload: any) {   
+  async login(payload: any) {
     const [accessToken, refreshToken] = this.generateToken(payload);
     const saveToken = {
       accessToken: accessToken,
       refreshToken: refreshToken,
       actor: payload.actor,
-      actorModel: payload.actorModel
+      actorModel: payload.actorModel,
     };
     const newItem = new this.authModel(saveToken);
     const result = newItem.save();
@@ -41,8 +41,8 @@ export class AuthService {
   }
 
   // validate user by jwt
-  async validateUserByJwt(payload:any, accessToken: string) {
-    console.log(payload)
+  async validateUserByJwt(payload: any, accessToken: string) {
+    console.log(payload);
     let auth = await this.findTokenEmail(accessToken);
     if (!auth)
       throw new UnauthorizedException('Session login anda sudah habis');
@@ -62,11 +62,11 @@ export class AuthService {
   }
 
   async verify(token: string) {
-      return this.jwtService.verify(token);
+    return this.jwtService.verify(token);
   }
 
   async findByToken(accessToken: string): Promise<Model<Auth>> {
-      return this.authModel.findOne({ accessToken: accessToken }).exec();
+    return this.authModel.findOne({ accessToken: accessToken }).exec();
   }
 
   getPayloadFromToken(token: string): any {
@@ -74,18 +74,22 @@ export class AuthService {
     let exceptions = ['iat', 'exp'];
     let payload = this.jwtService.decode(tokenNotBearer);
     if (typeof payload == 'object') {
-        for (var i = exceptions.length - 1; i >= 0; i--) {
-            delete payload[exceptions[i]];
-        }
+      for (var i = exceptions.length - 1; i >= 0; i--) {
+        delete payload[exceptions[i]];
+      }
     }
     return payload;
-}
+  }
 
   // create jwt payload
   generateToken(payload: any = {}): [string, string] {
-    console.log(process.env.JWT_TTL)
-    const accessToken = this.jwtService.sign(payload, { expiresIn: 60*60*60 });
-    const refreshToken = this.jwtService.sign({}, { expiresIn: process.env.JWT_REFRESH_TTL });
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: process.env.JWT_TTL,
+    });
+    const refreshToken = this.jwtService.sign(
+      {},
+      { expiresIn: process.env.JWT_REFRESH_TTL },
+    );
     return [accessToken, refreshToken];
   }
 }
