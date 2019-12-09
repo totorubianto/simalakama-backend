@@ -81,6 +81,12 @@ export class AuthService {
     return payload;
   }
 
+  //
+  async logout(user) {
+    const token = user.headers['authorization'].replace('Bearer ', '');
+    return this.authModel.deleteOne({ accessToken: token });
+  }
+
   // create jwt payload
   generateToken(payload: any = {}): [string, string] {
     const accessToken = this.jwtService.sign(payload, {

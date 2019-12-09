@@ -7,7 +7,7 @@ export class CronService {
   constructor(private readonly verificationsService: VerificationService) {}
 
   async runTask() {
-    console.log('Cron service running...');
+    console.log('🛠Cron service running...');
     cron.schedule('*/5 * * * *', async () => {
       console.log(
         new Date().toLocaleDateString(),

@@ -10,6 +10,7 @@ import {
   UploadedFile,
   ValidationPipe,
   Param,
+  Request,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -57,6 +58,12 @@ export class UsersController {
   @Post('update')
   async update(@Body() updateUserDto: UpdateUserDto, @User() user: any) {
     return await this.usersService.updateProfile(updateUserDto, user);
+  }
+
+  //logout
+  @Post('logout')
+  async logout(@Request() user: any) {
+    return await this.authService.logout(user);
   }
 
   // @findAll
