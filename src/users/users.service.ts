@@ -11,9 +11,9 @@ import * as uuidv1 from 'uuid/v1';
 import { VerificationService } from '../verification/verification.service';
 import { Verification } from '../verification/interfaces/verification.interface';
 import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
-import { AuthService } from '../auth/auth.service'
+import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
-import { UserType } from '../global/enum/user.type'
+import { UserType } from '../global/enum/user.type';
 const validator = new Validator();
 
 @Injectable()
@@ -34,16 +34,16 @@ export class UsersService {
   }
 
   //login
-  async login(data : LoginUserDto){
+  async login(data: LoginUserDto) {
     let user = await this.userModel.findOne({ email: data.email }).exec();
-    if (!user) throw new BadRequestException("Invalid Credentials!");
+    if (!user) throw new BadRequestException('Invalid Credentials!');
     let payload = {
       _id: user._id,
-      actor : user._id,
-      actorModel : UserType.USER,
-    }
+      actor: user._id,
+      actorModel: UserType.USER,
+    };
     const res = await this.authService.login(payload);
-    return res
+    return res;
   }
 
   // findall user service
@@ -63,7 +63,6 @@ export class UsersService {
 
   // updateProfile service
   async updateProfile(data: any, user: any): Promise<User> {
-    
     let users: Model<User> = await this.findById(user._id);
     if (data.email && data.email === users.email)
       throw new BadRequestException(

@@ -15,4 +15,9 @@ export const AuthSchema = new mongoose.Schema({
     ref: 'users',
     required: true,
   },
+  actorModel: {
+    type: String,
+    required: true,
+    enum: ['Admin', 'Merchant', 'User'],
+  },
 });
