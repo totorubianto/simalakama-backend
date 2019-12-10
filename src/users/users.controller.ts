@@ -74,7 +74,7 @@ export class UsersController {
   }
 
   // Request Forgot Password
-  @Post('request-forgot-password/')
+  @Post('request-forgot-password')
   requestForgotPassword(
     @Body() forgotPasswordUserDto: ForgotPasswordUserDto,
   ): Promise<any> {
