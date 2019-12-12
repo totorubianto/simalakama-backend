@@ -79,7 +79,6 @@ export class UsersController {
   // @me
   @Get('me')
   me(@User() user: any): Promise<any[]> {
-    console.log(user);
     return this.usersService.findById(user._id);
   }
 

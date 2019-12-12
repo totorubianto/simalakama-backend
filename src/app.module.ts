@@ -13,7 +13,9 @@ import { CronModule } from './cron/cron.module';
 import { UserSchema } from './users/schema/user.schema';
 import { AuthMiddleware } from './global/middleware/auth.middleware';
 //import controller
-import { UsersController } from './users/users.controller'
+import { UsersController } from './users/users.controller';
+import { AdminsModule } from './admins/admins.module';
+import { AdminsController } from './admins/admins.controller'
 
 @Module({
   imports: [
@@ -55,6 +57,7 @@ import { UsersController } from './users/users.controller'
       }),
     }),
     VerificationModule,
+    AdminsModule,
   ],
   controllers: [AppController],
   providers: [AppService, IsUniqueConstraint, AuthMiddleware],
@@ -73,9 +76,16 @@ export class AppModule {
         { path: 'users/request-forgot-password', method: RequestMethod.POST },
         { path: 'users/forgot-password/:token', method: RequestMethod.POST },
         { path: 'users/verify/:token', method: RequestMethod.GET },
+        //admin
+        { path: 'admins/login', method: RequestMethod.POST },
+        { path: 'admins/register', method: RequestMethod.POST },
+        { path: 'admins/request-forgot-password', method: RequestMethod.POST },
+        { path: 'admins/forgot-password/:token', method: RequestMethod.POST },
+        { path: 'admins/verify/:token', method: RequestMethod.GET },
     )
     .forRoutes(
-        UsersController,  
+        UsersController, 
+        AdminsController, 
     );
   }
   async onApplicationBootstrap() {
