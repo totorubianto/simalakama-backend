@@ -34,7 +34,7 @@ export class UsersService {
   }
 
   //login
-  async login(data: LoginUserDto) {
+  async login(data: LoginUserDto, client:any) {
     let user = await this.userModel.findOne({ email: data.email }).exec();
     if (!user) throw new BadRequestException('Invalid Credentials!');
     let payload = {
@@ -43,7 +43,8 @@ export class UsersService {
       actorModel: UserType.USER,
     };
     const res = await this.authService.login(payload);
-    return res;
+    await this.updateDevice(client, user)
+    return [res, user];
   }
 
   // findall user service
@@ -142,5 +143,16 @@ export class UsersService {
     );
     if (!userData) throw new BadRequestException('upload file gagal');
     return userData;
+  }
+
+  private async updateDevice(device: string, user: Model<User>): Promise<Model<User>> {
+    const devices = user.devices;
+    if (!devices|| !Array.isArray(devices)) return null;
+    
+    const exists = devices.find((d) => { return d.name == device });
+    if (exists) return null;
+
+    user.devices.push({ name: device, description: 'Using user login API' });
+    return await user.save();
   }
 }

@@ -41,8 +41,7 @@ export class AuthService {
   }
 
   // refresh token (deprecated)
-  async refresh(payload: any, accessToken: string) {
-    console.log(payload);
+  async refresh(accessToken: string, refreshToken: string) {
     let auth = await this.findTokenEmail(accessToken);
     if (!auth)
       throw new UnauthorizedException('Session login anda sudah habis');

@@ -10,6 +10,8 @@ import {
   ValidationPipe,
   Param,
   Request,
+  Headers,
+  BadGatewayException
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -29,6 +31,7 @@ import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
 import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 import { VerificationService } from '../verification/verification.service';
 import { User } from '../global/decorator/user';
+import { ClientDevice } from '../global/interfaces/client-devices.interface'
 
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -44,18 +47,34 @@ export class UsersController {
   // @Register
   @Post('register')
   async create(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.create(createUserDto);
+    throw new BadGatewayException('error')
+    const register = await this.usersService.create(createUserDto);
+    return {register}
   }
   // @Login
   @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto) {
-    return await this.usersService.login(loginUserDto);
+  async login(
+    @Body() loginUserDto: LoginUserDto,
+    @Headers('user-agent') userAgent,
+    @Headers('x-device') device,
+    @Headers('x-device-token') deviceToken,
+    @Request() req,
+  ) { 
+    const client: ClientDevice = {
+        userAgent: userAgent,
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        deviceToken: deviceToken, 
+    };
+    
+     const [login, user] = await this.usersService.login(loginUserDto, client);
+     return {login, user, client}
   }
 
   // @uUpdate Profile
   @Post('update')
-  async update(@Body() updateUserDto: UpdateUserDto, @User() user: any) {
-    return await this.usersService.updateProfile(updateUserDto, user);
+  async update(@Body() updateUserDto: UpdateUserDto, @User() data: any) {
+    const user = await this.usersService.updateProfile(updateUserDto, data);
+    return {user}
   }
 
   //logout
@@ -72,8 +91,9 @@ export class UsersController {
 
   // @findAll
   @Get('find-all')
-  findAll(): Promise<any[]> {
-    return this.usersService.findAll(null);
+  async findAll() {
+    const users = await this.usersService.findAll(null);
+    return {users};
   }
 
   // @me
