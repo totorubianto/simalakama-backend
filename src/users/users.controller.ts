@@ -104,16 +104,18 @@ export class UsersController {
 
   // Request Forgot Password
   @Post('request-forgot-password')
-  requestForgotPassword(
+  async requestForgotPassword(
     @Body() forgotPasswordUserDto: ForgotPasswordUserDto,
   ): Promise<any> {
-    return this.usersService.requestForgotPassword(forgotPasswordUserDto);
+     const req = await this.usersService.requestForgotPassword(forgotPasswordUserDto);
+     return { message: 'ok' }
   }
 
   // Verify Password
   @Get('verify/:token')
-  verifyForgotPassword(@Param('token') token: string): Promise<any> {
-    return this.verificationService.verify(token);
+  async verifyForgotPassword(@Param('token') token: string): Promise<any> {
+    const verify = await this.verificationService.verify(token);
+    return {message: 'ok'}
   }
 
   // Forgot Password
@@ -137,7 +139,8 @@ export class UsersController {
       fileFilter: imageFileFilter,
     }),
   )
-  async uploadedFile(@UploadedFile() file, @User() user: any) {
-    return await this.usersService.uploadAvatar(file, user);
+  async uploadedFile(@UploadedFile() file, @User() userData: any) {
+    const user = await this.usersService.uploadAvatar(file, userData);
+    return {user}
   }
 }

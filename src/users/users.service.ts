@@ -92,6 +92,7 @@ export class UsersService {
   ): Promise<any> {
     const email = { email: forgotPassword.email };
     const user: Model<User> = await this.findOne(email);
+    if (!user) throw new BadRequestException('email tidak ditemukan')
     const data = {
       email: forgotPassword.email,
       name: 'FORGOT_PASSWORD',
@@ -112,7 +113,7 @@ export class UsersService {
         address: `${process.env.APP_URL}/users/verify/${verification.token}`,
       },
     });
-    return { message: 'ok' };
+    return verification;
   }
 
   // forgotPassword Service
