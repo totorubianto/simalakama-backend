@@ -118,11 +118,12 @@ export class UsersController {
 
   // Forgot Password
   @Post('forgot-password/:token')
-  forgotPassword(
+  async forgotPassword(
     @Param('token') token: string,
     @Body() updateForgotPasswordUserDto: UpdateForgotPasswordUserDto,
-  ): Promise<any> {
-    return this.usersService.forgotPassword(updateForgotPasswordUserDto, token);
+  ) {
+     const user = await this.usersService.forgotPassword(updateForgotPasswordUserDto, token);
+     return {user}
   }
 
   // uploadAvatar
