@@ -127,6 +127,7 @@ export class UsersService {
     let user: Model<User> = await this.userModel.findOne(email);
     user.password = forgotPasswordUserDto.newPassword;
     await user.save();
+    verify.delete()
     return user;
   }
 
