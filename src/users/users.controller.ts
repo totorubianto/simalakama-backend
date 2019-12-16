@@ -47,7 +47,6 @@ export class UsersController {
   // @Register
   @Post('register')
   async create(@Body() createUserDto: CreateUserDto) {
-    throw new BadGatewayException('error')
     const register = await this.usersService.create(createUserDto);
     return {register}
   }

@@ -17,6 +17,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useStaticAssets(join(__dirname, '..', 'public'));
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(
       new ValidationPipe({
           whitelist: true,
