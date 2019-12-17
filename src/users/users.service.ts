@@ -26,12 +26,12 @@ export class UsersService {
   ) {}
 
   //create service
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto, client:any) {
     let createdUser = new this.userModel(createUserDto);
     await createdUser.save();
-    const client = ""
-    const [login] = await this.login(createdUser, client)
-    return [login, createdUser]
+    const [login, user] = await this.login(createdUser, client)
+    await this.updateDevice(client, user)
+    return [login, createdUser, client]
   }
 
   //login
@@ -45,7 +45,7 @@ export class UsersService {
     };
     const res = await this.authService.login(payload);
     await this.updateDevice(client, user)
-    return [res, user];
+    return [res, user, client];
   }
 
   // findall user service

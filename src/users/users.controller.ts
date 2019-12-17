@@ -46,9 +46,20 @@ export class UsersController {
 
   // @Register
   @Post('register')
-  async create(@Body() createUserDto: CreateUserDto) {
-    const [register, user] = await this.usersService.create(createUserDto);
-    return {register, user}
+  async create(
+    @Body() createUserDto: CreateUserDto,
+    @Headers('user-agent') userAgent,
+    @Headers('x-device') device,
+    @Headers('x-device-token') deviceToken,
+    @Request() req,
+  ) {
+    const clientData: ClientDevice = {
+      userAgent: userAgent,
+      ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+      deviceToken: deviceToken, 
+    };
+    const [register, user, client] = await this.usersService.create(createUserDto,clientData);
+    return {register, user, client}
   }
   // @Login
   @Post('login')
@@ -59,13 +70,13 @@ export class UsersController {
     @Headers('x-device-token') deviceToken,
     @Request() req,
   ) { 
-    const client: ClientDevice = {
+    const clientData: ClientDevice = {
         userAgent: userAgent,
         ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
         deviceToken: deviceToken, 
     };
     
-     const [login, user] = await this.usersService.login(loginUserDto, client);
+     const [login, user, client] = await this.usersService.login(loginUserDto, clientData);
      return {login, user, client}
   }
 
