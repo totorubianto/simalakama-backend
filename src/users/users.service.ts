@@ -26,11 +26,12 @@ export class UsersService {
   ) {}
 
   //create service
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = await this.userModel.findOne({ email: createUserDto.email });
-    if (user) throw new BadRequestException('user sudah ada');
+  async create(createUserDto: CreateUserDto) {
     let createdUser = new this.userModel(createUserDto);
-    return await createdUser.save();
+    await createdUser.save();
+    const client = ""
+    const [login] = await this.login(createdUser, client)
+    return [login, createdUser]
   }
 
   //login
