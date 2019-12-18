@@ -5,7 +5,6 @@ import { User } from './interfaces/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as fs from 'fs';
 import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
-import { Validator } from 'class-validator';
 import { MailerService } from '@nest-modules/mailer';
 import * as uuidv1 from 'uuid/v1';
 import { VerificationService } from '../verification/verification.service';
@@ -14,7 +13,8 @@ import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
 import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UserType } from '../global/enum/user.type';
-const validator = new Validator();
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class UsersService {
@@ -37,7 +37,9 @@ export class UsersService {
   //login
   async login(data: LoginUserDto, client:any) {
     let user = await this.userModel.findOne({ email: data.email }).exec();
-    if (!user) throw new BadRequestException('Invalid Credentials!');
+    if (!user) throw new BadRequestException('Email not found!');
+    let pass = await bcrypt.compare(data.password, user.password);
+    if (!pass) throw new BadRequestException('Wrong password')
     let payload = {
       _id: user._id,
       actor: user._id,
@@ -77,11 +79,6 @@ export class UsersService {
       let usersAll: Model<User> = await this.findAll(email);
       if (usersAll.length > 0)
         throw new BadRequestException('email sudah digunakan');
-    }
-    if (data.password) {
-      if (!validator.minLength(data.password, 6))
-        throw new BadRequestException('password');
-      users.password = data.password;
     }
 
     return await users.save();
