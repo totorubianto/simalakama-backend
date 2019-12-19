@@ -61,7 +61,7 @@ import { AdminsController } from './admins/admins.controller'
     AdminsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, IsUniqueConstraint, , DoesExistConstraint, AuthMiddleware],
+  providers: [AppService, IsUniqueConstraint, DoesExistConstraint, AuthMiddleware],
 })
 
 export class AppModule {
