@@ -8,6 +8,7 @@ import { ConfigModule } from './config/config.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { VerificationModule } from './verification/verification.module';
 import { IsUniqueConstraint } from './global/validators/IsUnique';
+import { DoesExistConstraint } from './global/validators/DoesExist'
 import { CronService } from './cron/cron.service';
 import { CronModule } from './cron/cron.module';
 import { UserSchema } from './users/schema/user.schema';
@@ -60,15 +61,15 @@ import { AdminsController } from './admins/admins.controller'
     AdminsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, IsUniqueConstraint, AuthMiddleware],
+  providers: [AppService, IsUniqueConstraint, , DoesExistConstraint, AuthMiddleware],
 })
 
 export class AppModule {
-  constructor(private readonly cronService: CronService) {}
+  constructor(private readonly cronService: CronService) { }
   configure(consumer: MiddlewareConsumer) {
     consumer
-    .apply(AuthMiddleware)
-    .exclude(
+      .apply(AuthMiddleware)
+      .exclude(
         // users
         { path: 'users/login', method: RequestMethod.POST },
         { path: 'users/register', method: RequestMethod.POST },
@@ -82,11 +83,11 @@ export class AppModule {
         { path: 'admins/request-forgot-password', method: RequestMethod.POST },
         { path: 'admins/forgot-password/:token', method: RequestMethod.POST },
         { path: 'admins/verify/:token', method: RequestMethod.GET },
-    )
-    .forRoutes(
-        UsersController, 
-        AdminsController, 
-    );
+      )
+      .forRoutes(
+        UsersController,
+        AdminsController,
+      );
   }
   async onApplicationBootstrap() {
     this.cronService.runTask();
