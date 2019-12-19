@@ -29,9 +29,13 @@ export class UsersService {
   async create(createUserDto: CreateUserDto, client:any) {
     let createdUser = new this.userModel(createUserDto);
     await createdUser.save();
-    const [login, user] = await this.login(createdUser, client)
+    const login = {
+      email: createUserDto.email,
+      password : createUserDto.password
+    }
+    const [loginData, user] = await this.login(login, client)
     await this.updateDevice(client, user)
-    return [login, createdUser, client]
+    return [loginData, createdUser, client]
   }
 
   //login
