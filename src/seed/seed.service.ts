@@ -17,7 +17,7 @@ export class SeedService {
 		const obj = {
 			firstName: 'Simalakama',
 			lastName: 'root',
-			email: 'simakalama@gmail.com',
+			email: 'simalakama@gmail.com',
 			phoneNumber: '083108222625',
 			password: 'simalakama',
 			passwordConfirmation: 'simalakama',

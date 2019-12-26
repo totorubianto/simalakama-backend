@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../users/interfaces/user.interface';
+import { Admin } from '../../admins/interfaces/admin.interface'
 import {
   registerDecorator,
   ValidatorConstraint,
@@ -14,7 +15,10 @@ import {
 @ValidatorConstraint({ name: 'doesExist', async: false })
 @Injectable()
 export class DoesExistConstraint implements ValidatorConstraintInterface {
-  constructor(@InjectModel('User') readonly user: Model<User>) {}
+  constructor(
+    @InjectModel('User') readonly user: Model<User>,
+    @InjectModel('Admin') readonly admin: Model<Admin>
+    ) {}
 
   public async validate(value: string, args: ValidationArguments) {
     const { property } = args;
@@ -34,7 +38,7 @@ export class DoesExistConstraint implements ValidatorConstraintInterface {
     }
     const model = this[modelName];
     if (!model) return false;
-
+    console.log(model)
     const exists = await model.findOne(query).exec();
     return exists ? true : false;
   }
