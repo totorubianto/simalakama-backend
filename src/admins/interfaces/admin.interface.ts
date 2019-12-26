@@ -6,12 +6,7 @@ export interface Admin extends Document {
     readonly email: string;
     readonly phoneNumber: string;
     readonly password: string;
-    readonly pin: string;
     readonly dateOfBirth: Date;
-    readonly balance: {
-        primary: number;
-        point: number;
-    };
     readonly role: string;
     readonly status: {
         suspended: boolean;

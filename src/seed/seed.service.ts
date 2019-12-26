@@ -15,13 +15,12 @@ export class SeedService {
 
 	async seedAdmins() {
 		const obj = {
-			firstName: 'Root',
-			lastName: 'En',
+			firstName: 'Simalakama',
+			lastName: 'root',
 			email: 'simakalama@gmail.com',
 			phoneNumber: '083108222625',
 			password: 'simalakama',
 			passwordConfirmation: 'simalakama',
-			pin: null,
 			dateOfBirth: null,
 			role: AdminRole.ROOT
 		};

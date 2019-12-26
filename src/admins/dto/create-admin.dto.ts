@@ -36,7 +36,6 @@ export class CreateAdminDto {
     @MinLength(6)
     @MatchesProperty('password')
     readonly passwordConfirmation: string;
-    readonly pin: string;
     readonly dateOfBirth: Date;
     @IsDefined()
     @IsEnum(AdminRoleEnum)
