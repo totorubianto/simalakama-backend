@@ -12,11 +12,15 @@ import { DoesExistConstraint } from './global/validators/DoesExist'
 import { CronService } from './cron/cron.service';
 import { CronModule } from './cron/cron.module';
 import { UserSchema } from './users/schema/user.schema';
+import { AdminSchema } from './admins/schema/admin.schema'
 import { AuthMiddleware } from './global/middleware/auth.middleware';
+import { SeedModule } from './seed/seed.module';
+import { SeedService } from './seed/seed.service';
 //import controller
 import { UsersController } from './users/users.controller';
 import { AdminsModule } from './admins/admins.module';
 import { AdminsController } from './admins/admins.controller'
+
 
 @Module({
   imports: [
@@ -34,6 +38,7 @@ import { AdminsController } from './admins/admins.controller'
       },
     ),
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: 'Admin', schema: AdminSchema }]),
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {
@@ -59,13 +64,17 @@ import { AdminsController } from './admins/admins.controller'
     }),
     VerificationModule,
     AdminsModule,
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [AppService, IsUniqueConstraint, DoesExistConstraint, AuthMiddleware],
 })
 
 export class AppModule {
-  constructor(private readonly cronService: CronService) { }
+  constructor(
+    private readonly cronService: CronService,
+    private readonly seedService: SeedService
+  ) { }
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
@@ -90,6 +99,7 @@ export class AppModule {
       );
   }
   async onApplicationBootstrap() {
+    this.seedService.run();
     this.cronService.runTask();
   }
 }

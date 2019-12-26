@@ -12,7 +12,7 @@ import { Verification } from '../verification/interfaces/verification.interface'
 import { UpdateForgotPasswordUserDto } from './dto/update-forgot-password.dto';
 import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
-import { UserType } from '../global/enum/user.type';
+import { UserType } from '../global/enum/user-type.enum';
 import * as bcrypt from 'bcrypt';
 
 

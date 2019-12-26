@@ -2,14 +2,15 @@ import { NestMiddleware, Injectable, UnauthorizedException, BadRequestException 
 import { Request, Response, NextFunction } from 'express';
 import { Model } from 'mongoose';
 import { AuthService } from '../../auth/auth.service';
-import { UserType } from '../enum/user.type';
+import { UserType } from '../enum/user-type.enum';
 import { UsersService } from '../../users/users.service';
-
+import { AdminsService } from '../../admins/admins.service'
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
     constructor(
         private readonly usersService: UsersService,
         private readonly authService: AuthService,
+        private readonly adminsService: AdminsService
     ) {}
 
     async use(req: Request, res: Response, next: NextFunction) {
@@ -28,7 +29,7 @@ export class AuthMiddleware implements NestMiddleware {
             let user;
             switch (decoded.actorModel) {
                 case UserType.ADMIN:
-                    user = "coming soon"
+                    user = await this.adminsService.findById(decoded._id)
                     break;
                 case UserType.USER:
                     user = await this.usersService.findById(decoded._id);

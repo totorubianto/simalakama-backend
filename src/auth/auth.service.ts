@@ -11,7 +11,7 @@ import { Auth } from './interfaces/jwt.interface';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { UserType } from '../global/enum/user.type';
+import { UserType } from '../global/enum/user-type.enum';
 @Injectable()
 export class AuthService {
   constructor(
