@@ -8,19 +8,18 @@ import { ConfigModule } from './config/config.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { VerificationModule } from './verification/verification.module';
 import { IsUniqueConstraint } from './global/validators/IsUnique';
-import { DoesExistConstraint } from './global/validators/DoesExist'
+import { DoesExistConstraint } from './global/validators/DoesExist';
 import { CronService } from './cron/cron.service';
 import { CronModule } from './cron/cron.module';
 import { UserSchema } from './users/schema/user.schema';
-import { AdminSchema } from './admins/schema/admin.schema'
+import { AdminSchema } from './admins/schema/admin.schema';
 import { AuthMiddleware } from './global/middleware/auth.middleware';
 import { SeedModule } from './seed/seed.module';
 import { SeedService } from './seed/seed.service';
 //import controller
 import { UsersController } from './users/users.controller';
 import { AdminsModule } from './admins/admins.module';
-import { AdminsController } from './admins/admins.controller'
-
+import { AdminsController } from './admins/admins.controller';
 
 @Module({
   imports: [
@@ -44,7 +43,7 @@ import { AdminsController } from './admins/admins.controller'
         transport: {
           host: process.env.MAIL_HOST,
           port: Number(process.env.MAIL_PORT),
-          secure: false, // true for 465, false for other ports
+          secure: true, // true for 465, false for other ports
           auth: {
             user: process.env.MAIL_USERNAME,
             pass: process.env.MAIL_PASSWORD,
@@ -67,14 +66,18 @@ import { AdminsController } from './admins/admins.controller'
     SeedModule,
   ],
   controllers: [AppController],
-  providers: [AppService, IsUniqueConstraint, DoesExistConstraint, AuthMiddleware],
+  providers: [
+    AppService,
+    IsUniqueConstraint,
+    DoesExistConstraint,
+    AuthMiddleware,
+  ],
 })
-
 export class AppModule {
   constructor(
     private readonly cronService: CronService,
-    private readonly seedService: SeedService
-  ) { }
+    private readonly seedService: SeedService,
+  ) {}
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
@@ -93,10 +96,7 @@ export class AppModule {
         { path: 'admins/forgot-password/:token', method: RequestMethod.POST },
         { path: 'admins/verify/:token', method: RequestMethod.GET },
       )
-      .forRoutes(
-        UsersController,
-        AdminsController,
-      );
+      .forRoutes(UsersController, AdminsController);
   }
   async onApplicationBootstrap() {
     this.seedService.run();
