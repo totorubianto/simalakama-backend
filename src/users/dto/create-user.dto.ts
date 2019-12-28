@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { IsUnique } from '../../global/validators/IsUnique';
+
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
