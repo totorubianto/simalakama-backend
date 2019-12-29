@@ -17,7 +17,7 @@ export const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    fistName: {
+    firstName: {
       type: String,
       required: true,
     },
