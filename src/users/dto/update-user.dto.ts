@@ -1,4 +1,10 @@
-import { IsString, IsEmail, IsEmpty, MinLength, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsEmpty,
+  MinLength,
+  IsOptional,
+} from 'class-validator';
 import { IsUnique } from '../../global/validators/IsUnique';
 
 export class UpdateUserDto {
@@ -6,10 +12,6 @@ export class UpdateUserDto {
   @IsString()
   @IsUnique('email', 'user')
   readonly email: string;
-  @IsString()
-  @IsOptional()
-  @MinLength(6)
-  readonly password: string;
   @IsString()
   @IsOptional()
   readonly name: string;

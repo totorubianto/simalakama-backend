@@ -15,7 +15,6 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { UserType } from '../global/enum/user-type.enum';
 import * as bcrypt from 'bcrypt';
 
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -26,31 +25,31 @@ export class UsersService {
   ) {}
 
   //create service
-  async create(createUserDto: CreateUserDto, client:any) {
+  async create(createUserDto: CreateUserDto, client: any) {
     let createdUser = new this.userModel(createUserDto);
     await createdUser.save();
     const login = {
       email: createUserDto.email,
-      password : createUserDto.password
-    }
-    const [loginData, user] = await this.login(login, client)
-    await this.updateDevice(client, user)
-    return [loginData, createdUser, client]
+      password: createUserDto.password,
+    };
+    const [loginData, user] = await this.login(login, client);
+    await this.updateDevice(client, user);
+    return [loginData, createdUser, client];
   }
 
   //login
-  async login(data: LoginUserDto, client:any) {
+  async login(data: LoginUserDto, client: any) {
     let user = await this.userModel.findOne({ email: data.email }).exec();
     if (!user) throw new BadRequestException('Email not found!');
     let pass = await bcrypt.compare(data.password, user.password);
-    if (!pass) throw new BadRequestException('Wrong password')
+    if (!pass) throw new BadRequestException('Wrong password');
     let payload = {
       _id: user._id,
       actor: user._id,
       actorModel: UserType.USER,
     };
     const res = await this.authService.login(payload);
-    await this.updateDevice(client, user)
+    await this.updateDevice(client, user);
     return [res, user, client];
   }
 
@@ -77,13 +76,7 @@ export class UsersService {
         'anda tidak melakukan perubahan apa pun pada email',
       );
     if (data.name) users.name = data.name;
-    if (data.email) {
-      users.email = data.email;
-      let email = { email: users.email };
-      let usersAll: Model<User> = await this.findAll(email);
-      if (usersAll.length > 0)
-        throw new BadRequestException('email sudah digunakan');
-    }
+    if (data.email) users.email = data.email;
 
     return await users.save();
   }
@@ -94,7 +87,7 @@ export class UsersService {
   ): Promise<any> {
     const email = { email: forgotPassword.email };
     const user: Model<User> = await this.findOne(email);
-    if (!user) throw new BadRequestException('email tidak ditemukan')
+    if (!user) throw new BadRequestException('email tidak ditemukan');
     const data = {
       email: forgotPassword.email,
       name: 'FORGOT_PASSWORD',
@@ -130,7 +123,7 @@ export class UsersService {
     let user: Model<User> = await this.userModel.findOne(email);
     user.password = forgotPasswordUserDto.newPassword;
     await user.save();
-    verify.delete()
+    verify.delete();
     return user;
   }
 
@@ -149,11 +142,16 @@ export class UsersService {
     return userData;
   }
 
-  private async updateDevice(device: string, user: Model<User>): Promise<Model<User>> {
+  private async updateDevice(
+    device: string,
+    user: Model<User>,
+  ): Promise<Model<User>> {
     const devices = user.devices;
-    if (!devices|| !Array.isArray(devices)) return null;
-    
-    const exists = devices.find((d) => { return d.name == device });
+    if (!devices || !Array.isArray(devices)) return null;
+
+    const exists = devices.find(d => {
+      return d.name == device;
+    });
     if (exists) return null;
 
     user.devices.push({ name: device, description: 'Using user login API' });
