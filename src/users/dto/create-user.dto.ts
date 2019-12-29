@@ -4,6 +4,7 @@ import {
   IsNumberString,
   MinLength,
   IsNotEmpty,
+  IsOptional,
 } from 'class-validator';
 import { IsUnique } from '../../global/validators/IsUnique';
 
@@ -17,5 +18,8 @@ export class CreateUserDto {
   readonly password: string;
   @IsString()
   @IsNotEmpty()
-  readonly name: string;
+  readonly firstName: string;
+  @IsString()
+  @IsOptional()
+  readonly lastName: string;
 }

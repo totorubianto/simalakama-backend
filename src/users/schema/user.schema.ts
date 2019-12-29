@@ -1,24 +1,28 @@
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
-export const UserSchema = new mongoose.Schema({
+export const UserSchema = new mongoose.Schema(
+  {
     email: {
       type: String,
       unique: true,
       required: true,
     },
-    status:{
-      suspended : { type: Boolean, default: false },
-      upgraded: { type: String, default: "Free" },
-      emailVerifiedAt : { type: Date, default: null }
+    status: {
+      suspended: { type: Boolean, default: false },
+      upgraded: { type: String, default: 'Free' },
+      emailVerifiedAt: { type: Date, default: null },
     },
     password: {
       type: String,
       required: true,
     },
-    name: {
+    fistName: {
       type: String,
       required: true,
+    },
+    lastName: {
+      type: String,
     },
     avatar: {
       type: String,

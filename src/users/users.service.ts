@@ -71,7 +71,8 @@ export class UsersService {
   // updateProfile service
   async updateProfile(data: any, user: any): Promise<User> {
     let users: Model<User> = await this.findById(user._id);
-    if (data.name) users.name = data.name;
+    if (data.fistName) users.fistName = data.fistName;
+    if (data.lastName) users.lastName = data.lastName;
     if (data.email) users.email = data.email;
 
     return await users.save();
@@ -99,7 +100,7 @@ export class UsersService {
       template: 'forgotPassword.html', // The `.pug` or `.hbs` extension is appended automatically.
       context: {
         // Data to be sent to template engine.
-        to: user.name,
+        to: user.fistName,
         token: uuidv1(),
         address: `${process.env.APP_URL}/users/verify/${verification.token}`,
       },
