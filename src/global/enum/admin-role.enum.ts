@@ -10,17 +10,11 @@ class AdminRole {
             case AdminRole.ROOT:
                 return 'Root';
                 break;
-            case AdminRole.FINANCE:
-                return 'Finance';
-                break;
             case AdminRole.OPERATION:
                 return 'Operation';
                 break;
             case AdminRole.SUPERVISOR:
                 return 'Supervisor';
-                break;
-            case AdminRole.RISK:
-                return 'Risk';
                 break;
             default:
                 return 'Unknown';
