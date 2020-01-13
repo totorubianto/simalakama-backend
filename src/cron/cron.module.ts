@@ -3,8 +3,8 @@ import { CronService } from './cron.service';
 import { VerificationModule } from '../verification/verification.module';
 
 @Module({
-  imports: [VerificationModule],
-  providers: [CronService],
-  exports: [CronService],
+    imports: [VerificationModule],
+    providers: [CronService],
+    exports: [CronService],
 })
 export class CronModule {}
