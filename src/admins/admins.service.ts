@@ -52,4 +52,35 @@ export class AdminsService {
       throw new InternalServerErrorException('Something went wrong!');
     return logout;
   }
+
+  async list(
+    skip?: number,
+    limit?: number,
+    sort?: string[],
+    filter?: string[],
+    search?: string[],
+  ): Promise<[Admin[], number, number, number, string[]]> {
+    const query = {};
+    let filterQuery = [];
+    filter.forEach((f: string) => {});
+    if (filterQuery.length > 0) Object.assign(query, { $and: filterQuery });
+    if (search && search.length > 0) {
+      const searchQuery = [];
+      for (var i = search.length - 1; i >= 0; i--) {
+        const q = search[i] ? search[i].split('|') : [];
+        if (q.length < 2) continue;
+        const name = q[0];
+        const value = q[1];
+        searchQuery.push({ [name]: { $regex: '.*' + [value] + '.*' } });
+      }
+      Object.assign(query, { $or: searchQuery });
+    }
+    let cursor = this.adminModel.find(query);
+    if (sort) cursor.sort({ [sort[0]]: sort[1] });
+    if (skip) cursor.skip(skip);
+    if (limit) cursor.limit(limit);
+    const admins = await cursor.exec();
+    const count = await this.adminModel.countDocuments(query);
+    return [admins, skip, limit, count, filter];
+  }
 }
