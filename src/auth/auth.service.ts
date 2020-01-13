@@ -85,10 +85,12 @@ export class AuthService {
   }
 
   //logout
-  async logout(user) {
-    const token = user.headers['authorization'].replace('Bearer ', '');
-    return this.authModel.deleteOne({ accessToken: token });
-  }
+  async logout(accessToken: string): Promise<boolean> {
+    let auth = await this.findByToken(accessToken);
+    if (!auth) return false;
+    auth.remove();
+    return true;
+}
 
   //logout All
   async logoutAll(user) {
