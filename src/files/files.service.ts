@@ -39,9 +39,7 @@ export class FilesService {
         const key = filename.substring(0, 10) + '_' + Date.now() + '.' + ext;
         const savePath = path.join(GlobalHelper.uploadPathImage, key);
         if (model) this.remove(model);
-
         const upload = await fs.writeFile(savePath, file.buffer);
-
         const uploaded = this.file({
             name: file.originalname,
             key: key,

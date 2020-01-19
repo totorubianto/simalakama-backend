@@ -122,17 +122,8 @@ export class UsersService {
 
     // upload user avatar service
     async uploadAvatar(data: any, user: any): Promise<User> {
-        if (!data) throw new BadRequestException('harap masukan file');
-        const deleteImg = await this.userModel.findById(user._id);
-        const pathDelete = './public/avatar/' + deleteImg.avatar;
-        if (fs.existsSync(pathDelete)) fs.unlinkSync(pathDelete);
-        const userData = await this.userModel.findByIdAndUpdate(
-            user._id,
-            { avatar: data.filename },
-            { new: true },
-        );
-        if (!userData) throw new BadRequestException('upload file gagal');
-        return userData;
+        const users = await this.findById(user._id);
+        return users;
     }
 
     private async updateDevice(device: string, user: Model<User>): Promise<Model<User>> {
