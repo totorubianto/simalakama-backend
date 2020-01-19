@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { Model, Types } from 'mongoose';
 import { IFile } from './interfaces/file.interface';
 import { FileType } from '../global/enum/file-type.enum';
 import { promises as fs } from 'fs';
@@ -32,18 +32,15 @@ export class FilesService {
     }
 
     private async uploadLocalImages(file: any, desc?: string, model?: any): Promise<Model<IFile>> {
+        if (model && !Types.ObjectId.isValid(model))
+            throw new BadRequestException('Object Id not valid');
         const ext = file.originalname.split('.').pop();
         const filename = file.originalname.split('.')[0];
         const key = filename.substring(0, 10) + '_' + Date.now() + '.' + ext;
         const savePath = path.join(GlobalHelper.uploadPathImage, key);
-
         if (model) this.remove(model);
 
         const upload = await fs.writeFile(savePath, file.buffer);
-
-        // const deleteImg = await this.file.findById(user._id);
-        // const pathDelete = './public/avatar/' + deleteImg.avatar;
-        // if (fs.existsSync(pathDelete)) fs.unlinkSync(pathDelete);
 
         const uploaded = this.file({
             name: file.originalname,
