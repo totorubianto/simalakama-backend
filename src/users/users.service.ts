@@ -14,6 +14,8 @@ import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UserType } from '../global/enum/user-type.enum';
 import * as bcrypt from 'bcrypt';
+import { FileType } from 'src/global/enum/file-type.enum';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +24,7 @@ export class UsersService {
         private readonly mailerService: MailerService,
         private readonly verificationService: VerificationService,
         private readonly authService: AuthService,
+        private readonly filesService: FilesService,
     ) {}
 
     //create service
@@ -121,9 +124,19 @@ export class UsersService {
     }
 
     // upload user avatar service
-    async uploadAvatar(data: any, user: any): Promise<User> {
-        const users = await this.findById(user._id);
-        return users;
+    async uploadAvatar(userData: any): Promise<User> {
+        const user = await this.findById(userData._id);
+        const { avatar } = userData;
+        if (avatar) {
+            const cover = await this.filesService.upload(
+                user.avatar,
+                FileType.LOCAL_IMAGES,
+                `Article:${user._id}`,
+                user.avatar,
+            );
+            user.cover = cover._id;
+        }
+        return user;
     }
 
     private async updateDevice(device: string, user: Model<User>): Promise<Model<User>> {

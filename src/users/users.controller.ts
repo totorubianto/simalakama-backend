@@ -11,13 +11,14 @@ import {
     Param,
     Request,
     Headers,
+    UploadedFiles,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { UserTypes } from '../global/decorator/userTypes';
 import { TransformInterceptor } from '../global/interceptor/transform.interceptor';
 import { HttpExceptionFilter } from '../global/filter/http-exception.filter';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -136,17 +137,10 @@ export class UsersController {
 
     // uploadAvatar
     @Post('upload-avatar')
-    @UseInterceptors(
-        FileInterceptor('avatar', {
-            storage: diskStorage({
-                destination: './public/avatar',
-                filename: editFileName,
-            }),
-            fileFilter: imageFileFilter,
-        }),
-    )
-    async uploadedFile(@UploadedFile() file, @User() userData: any) {
-        const user = await this.usersService.uploadAvatar(file, userData);
+    @UseInterceptors(AnyFilesInterceptor())
+    async uploadedFile(@UploadedFiles() files = [], @User() userData: any) {
+        userData.avatar = files.find(f => f.fieldname == 'avatar');
+        const user = await this.usersService.uploadAvatar(userData);
         return { user };
     }
 }

@@ -16,11 +16,13 @@ import { AdminSchema } from './admins/schema/admin.schema';
 import { AuthMiddleware } from './global/middleware/auth.middleware';
 import { SeedModule } from './seed/seed.module';
 import { SeedService } from './seed/seed.service';
+import { FilesModule } from './files/files.module';
 //import controller
 import { UsersController } from './users/users.controller';
 import { AdminsModule } from './admins/admins.module';
 import { AdminsController } from './admins/admins.controller';
 
+console.log(process.env.APP_URL);
 @Module({
     imports: [
         AuthModule,
@@ -64,6 +66,7 @@ import { AdminsController } from './admins/admins.controller';
         VerificationModule,
         AdminsModule,
         SeedModule,
+        FilesModule,
     ],
     controllers: [AppController],
     providers: [AppService, IsUniqueConstraint, DoesExistConstraint, AuthMiddleware],
