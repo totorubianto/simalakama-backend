@@ -63,7 +63,7 @@ export class UsersService {
 
     // findall user service
     async findById(id: string): Model<User> {
-        return await this.userModel.findById(id);
+        return await this.userModel.findById(id).populate('avatar');
     }
 
     // findall user service
