@@ -8,11 +8,11 @@ import { FileType } from '../enum/file-type.enum';
 import { IFile } from '../../files/interfaces/file.interface';
 
 class GlobalHelper {
-    static publicPath = path.join(__dirname, '../../../public');
-    static uploadPathImage = path.join(GlobalHelper.publicPath, '/upload/images');
-    static uploadUrlImage = url.resolve(process.env.APP_URL, '/upload/images/');
-    static uploadPathDocument = path.join(GlobalHelper.publicPath, '/upload/documents');
-    static uploadUrlDocument = url.resolve(process.env.APP_URL, '/upload/documents/');
+    static publicPath: string = path.join(__dirname, '../../../public');
+    static uploadPathImage: string = path.join(GlobalHelper.publicPath, '/upload/images');
+    static uploadUrlImage: string = url.resolve(process.env.APP_URL, '/upload/images/');
+    static uploadPathDocument: string = path.join(GlobalHelper.publicPath, '/upload/documents');
+    static uploadUrlDocument: string = url.resolve(process.env.APP_URL, '/upload/documents/');
 
     static fileUrl(file: Model<IFile>) {
         let res;

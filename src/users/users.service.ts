@@ -25,7 +25,9 @@ export class UsersService {
         private readonly verificationService: VerificationService,
         private readonly authService: AuthService,
         private readonly filesService: FilesService,
-    ) {}
+    ) {
+        console.log(process.env.APP_URL);
+    }
 
     //create service
     async create(createUserDto: CreateUserDto, client: any) {
@@ -124,15 +126,15 @@ export class UsersService {
     }
 
     // upload user avatar service
-    async uploadAvatar(userData: any): Promise<User> {
+    async uploadAvatar(avatar, userData: any): Promise<User> {
         const user = await this.findById(userData._id);
-        const { avatar } = userData;
+        console.log(userData);
         if (avatar) {
             const cover = await this.filesService.upload(
-                user.avatar,
+                avatar,
                 FileType.LOCAL_IMAGES,
                 `Article:${user._id}`,
-                user.avatar,
+                user._id,
             );
             user.cover = cover._id;
         }

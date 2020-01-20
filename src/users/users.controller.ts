@@ -139,8 +139,9 @@ export class UsersController {
     @Post('upload-avatar')
     @UseInterceptors(AnyFilesInterceptor())
     async uploadedFile(@UploadedFiles() files = [], @User() userData: any) {
-        userData.avatar = files.find(f => f.fieldname == 'avatar');
-        const user = await this.usersService.uploadAvatar(userData);
+        const avatar = files.find(f => f.fieldname == 'avatar');
+        console.log(avatar);
+        const user = await this.usersService.uploadAvatar(avatar, userData);
         return { user };
     }
 }

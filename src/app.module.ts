@@ -1,10 +1,10 @@
+import { ConfigModule } from './config/config.module';
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { ConfigModule } from './config/config.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { VerificationModule } from './verification/verification.module';
 import { IsUniqueConstraint } from './global/validators/IsUnique';
@@ -17,11 +17,12 @@ import { AuthMiddleware } from './global/middleware/auth.middleware';
 import { SeedModule } from './seed/seed.module';
 import { SeedService } from './seed/seed.service';
 import { FilesModule } from './files/files.module';
+
 //import controller
 import { UsersController } from './users/users.controller';
 import { AdminsModule } from './admins/admins.module';
 import { AdminsController } from './admins/admins.controller';
-
+import { GlobalHelper } from './global/helper/global.helper';
 console.log(process.env.APP_URL);
 @Module({
     imports: [
@@ -67,6 +68,7 @@ console.log(process.env.APP_URL);
         AdminsModule,
         SeedModule,
         FilesModule,
+        GlobalHelper,
     ],
     controllers: [AppController],
     providers: [AppService, IsUniqueConstraint, DoesExistConstraint, AuthMiddleware],
