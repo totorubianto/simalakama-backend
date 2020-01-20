@@ -23,7 +23,6 @@ import { UsersController } from './users/users.controller';
 import { AdminsModule } from './admins/admins.module';
 import { AdminsController } from './admins/admins.controller';
 import { GlobalHelper } from './global/helper/global.helper';
-console.log(process.env.APP_URL);
 @Module({
     imports: [
         AuthModule,

@@ -38,7 +38,6 @@ export class DoesExistConstraint implements ValidatorConstraintInterface {
     }
     const model = this[modelName];
     if (!model) return false;
-    console.log(model)
     const exists = await model.findOne(query).exec();
     return exists ? true : false;
   }

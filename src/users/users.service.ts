@@ -95,7 +95,6 @@ export class UsersService {
             token: uuidv1(),
         };
         const verification = await this.verificationService.create(data);
-        console.log(verification.token);
         await this.mailerService.sendMail({
             to: forgotPassword.email,
             from: 'noreply@nestjs.com',
@@ -133,7 +132,7 @@ export class UsersService {
                 avatar,
                 FileType.LOCAL_IMAGES,
                 `User:${user._id}`,
-                user._id,
+                user.avatar,
             );
             user.avatar = avatarUpdate._id;
         }
@@ -141,6 +140,7 @@ export class UsersService {
         return user;
     }
 
+    // update device if login
     private async updateDevice(device: string, user: Model<User>): Promise<Model<User>> {
         const devices = user.devices;
         if (!devices || !Array.isArray(devices)) return null;
@@ -205,6 +205,4 @@ export class UsersService {
         user.status.suspended = false;
         return await user.save();
     }
-
-    
 }

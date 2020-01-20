@@ -32,15 +32,13 @@ export class FilesService {
     }
 
     private async uploadLocalImages(file: any, desc?: string, model?: any): Promise<Model<IFile>> {
-        console.log(model);
         if (model && !Types.ObjectId.isValid(model))
             throw new BadRequestException('Object Id not valid');
-        console.log(file);
         const ext = file.originalname.split('.').pop();
         const filename = file.originalname.split('.')[0];
         const key = filename.substring(0, 10) + '_' + Date.now() + '.' + ext;
         const savePath = path.join(GlobalHelper.uploadPathImage, key);
-        if (model) this.remove(model);
+        if (model) await this.remove(model);
         const upload = await fs.writeFile(savePath, file.buffer);
         const uploaded = this.file({
             name: file.originalname,
@@ -77,6 +75,7 @@ export class FilesService {
 
     async remove(id: string): Promise<boolean> {
         const file = await this.findById(id);
+        console.log(file)
         if (!file) return true;
         await file.remove();
         return true;
