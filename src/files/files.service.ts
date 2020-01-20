@@ -75,7 +75,6 @@ export class FilesService {
 
     async remove(id: string): Promise<boolean> {
         const file = await this.findById(id);
-        console.log(file)
         if (!file) return true;
         await file.remove();
         return true;
