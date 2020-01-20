@@ -25,7 +25,7 @@ export const UserSchema = new mongoose.Schema(
       type: String,
     },
     avatar: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId, ref: 'File'
     },
   },
   {

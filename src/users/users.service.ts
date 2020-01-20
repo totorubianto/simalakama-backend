@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './interfaces/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,8 +14,8 @@ import { AuthService } from '../auth/auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UserType } from '../global/enum/user-type.enum';
 import * as bcrypt from 'bcrypt';
-import { FileType } from 'src/global/enum/file-type.enum';
-import { FilesService } from 'src/files/files.service';
+import { FileType } from '../global/enum/file-type.enum';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class UsersService {
@@ -127,17 +127,17 @@ export class UsersService {
 
     // upload user avatar service
     async uploadAvatar(avatar, userData: any): Promise<User> {
-        const user = await this.findById(userData._id);
-        console.log(userData);
+        let user = await this.findById(userData._id);
         if (avatar) {
-            const cover = await this.filesService.upload(
+            const avatarUpdate = await this.filesService.upload(
                 avatar,
                 FileType.LOCAL_IMAGES,
-                `Article:${user._id}`,
+                `User:${user._id}`,
                 user._id,
             );
-            user.cover = cover._id;
+            user.avatar = avatarUpdate._id;
         }
+        await user.save()
         return user;
     }
 
@@ -153,4 +153,58 @@ export class UsersService {
         user.devices.push({ name: device, description: 'Using user login API' });
         return await user.save();
     }
+
+    async logout(accessToken: string): Promise<boolean> {
+        const logout = await this.authService.logout(accessToken);
+        if (!logout) throw new InternalServerErrorException('Something went wrong!');
+        return logout;
+    }
+
+    async logoutAll(user: Model<User>) {
+        const logout = await this.authService.logoutAll(user._id, user.constructor.modelName);
+        return logout;
+    }
+
+    //------------------------------------ admin zone ---------------------------------------
+
+    async list(
+        skip?: number,
+        limit?: number,
+        sort?: string[],
+        filter?: string,
+    ): Promise<[User[], number, number, number, string]> {
+        let query = {};
+        let cursor = this.userModel.find(query).populate('avatar');
+        if (skip) cursor.skip(skip);
+        if (limit) cursor.limit(limit);
+        if (sort) cursor.sort({ [sort[0]]: sort[1] });
+        const merchants = await cursor.exec();
+        const count = await this.userModel.countDocuments(query);
+
+        return [merchants, skip, limit, count, filter];
+    }
+
+    async suspend(id: string, actor: any, remarks: string) {
+        const user: Model = await this.findById(id);
+        if (user.status.suspended) throw new BadRequestException('Account is suspended');
+        user.failedAttempts.push({ name: 'SUSPENDED', description: remarks, actor: actor._id, actorModel: actor.constructor.modelName });
+        user.status.suspended = true;
+        this.logoutAll(user);
+        return await user.save();
+    }
+
+    async unsuspend(id: string, actor: any) {
+        const user: Model = await this.findById(id);
+        if (!user.status.suspended) throw new BadRequestException('Account is not suspended');
+        user.failedAttempts.push({
+            name: 'UNSUSPENDED',
+            description: 'Unsuspended',
+            actor: actor._id,
+            actorModel: actor.constructor.modelName,
+        });
+        user.status.suspended = false;
+        return await user.save();
+    }
+
+    
 }

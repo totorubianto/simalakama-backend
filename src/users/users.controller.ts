@@ -12,6 +12,8 @@ import {
     Request,
     Headers,
     UploadedFiles,
+    Query,
+    HttpCode,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -29,6 +31,9 @@ import { ForgotPasswordUserDto } from './dto/forgot-password-user.dto';
 import { VerificationService } from '../verification/verification.service';
 import { User } from '../global/decorator/user';
 import { ClientDevice } from '../global/interfaces/client-devices.interface';
+import { UserType } from '../global/enum';
+import { OParseIntPipe } from '../global/pipes/o-parse-int.pipe';
+import { ParseSortPipe } from '../global/pipes/parse-sort.pipe';
 
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -85,15 +90,13 @@ export class UsersController {
     }
 
     //logout
+    @UserTypes(UserType.USER)
+    @HttpCode(200)
     @Post('logout')
-    async logout(@Request() user: any) {
-        return await this.authService.logout(user);
-    }
-
-    //logout
-    @Post('logout-all')
-    async logoutAll(@User() user: any) {
-        return await this.authService.logoutAll(user);
+    async logout(@Request() req) {
+        const token = req.headers.authorization.split(" ")[1];
+        this.usersService.logout(token);
+        return {};
     }
 
     // @findAll
@@ -140,8 +143,20 @@ export class UsersController {
     @UseInterceptors(AnyFilesInterceptor())
     async uploadedFile(@UploadedFiles() files = [], @User() userData: any) {
         const avatar = files.find(f => f.fieldname == 'avatar');
-        console.log(avatar);
         const user = await this.usersService.uploadAvatar(avatar, userData);
         return { user };
+    }
+    
+    @UserTypes(UserType.ADMIN)
+    @Get('list')
+    async list(
+        @User() user,
+        @Query('skip', new OParseIntPipe()) qSkip,
+        @Query('limit', new OParseIntPipe()) qLimit,
+        @Query('sort', new ParseSortPipe()) qSort,
+        @Query('filter') qFilter,
+    ) {
+        const [users, skip, limit, count, filter] = await this.usersService.list(qSkip, qLimit, qSort, qFilter);
+        return { users, skip, limit, count, filter };
     }
 }

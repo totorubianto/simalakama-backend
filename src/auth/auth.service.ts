@@ -88,8 +88,9 @@ export class AuthService {
     }
 
     //logout All
-    async logoutAll(user) {
-        return this.authModel.deleteMany({ actor: user._id });
+    async logoutAll(morph: string, morphModel: string): Promise<boolean> {
+        let remove = await this.authModel.remove({ morph: morph, morphModel: morphModel });
+        return true;
     }
 
     // create jwt payload
