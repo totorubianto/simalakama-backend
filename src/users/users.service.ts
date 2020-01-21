@@ -130,7 +130,7 @@ export class UsersService {
                 avatar,
                 FileType.LOCAL_IMAGES,
                 `User:${user._id}`,
-                user.avatar,
+                user.avatar && user.avatar._id ? user.avatar._id : user.avatar,
             );
             user.avatar = avatarUpdate._id;
         }
