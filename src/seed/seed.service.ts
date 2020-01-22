@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { AdminsService } from '../admins/admins.service';
 import { AdminRole } from '../global/enum/admin-role.enum';
+import * as emoji from 'node-emoji'
 
 @Injectable()
 export class SeedService {
     constructor(private readonly adminsService: AdminsService) {}
 
     async run() {
-        console.log('Seeding admins...');
+        console.log(emoji.get('coffee'), "Seeding User");
         this.seedAdmins();
     }
 
