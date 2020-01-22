@@ -32,6 +32,7 @@ export class FilesService {
     }
 
     private async uploadLocalImages(file: any, desc?: string, model?: any): Promise<Model<IFile>> {
+        console.log(model);
         if (model && !Types.ObjectId.isValid(model))
             throw new BadRequestException('Object Id not valid');
         const ext = file.originalname.split('.').pop();

@@ -25,9 +25,7 @@ export class UsersService {
         private readonly verificationService: VerificationService,
         private readonly authService: AuthService,
         private readonly filesService: FilesService,
-    ) {
-        console.log(process.env.APP_URL);
-    }
+    ) {}
 
     //create service
     async create(createUserDto: CreateUserDto, client: any) {
@@ -65,7 +63,7 @@ export class UsersService {
 
     // findall user service
     async findById(id: string): Model<User> {
-        return await this.userModel.findById(id);
+        return await this.userModel.findById(id).populate('avatar');
     }
 
     // findall user service
@@ -132,11 +130,11 @@ export class UsersService {
                 avatar,
                 FileType.LOCAL_IMAGES,
                 `User:${user._id}`,
-                user.avatar,
+                user.avatar && user.avatar._id ? user.avatar._id : user.avatar,
             );
             user.avatar = avatarUpdate._id;
         }
-        await user.save()
+        await user.save();
         return user;
     }
 
@@ -187,7 +185,12 @@ export class UsersService {
     async suspend(id: string, actor: any, remarks: string) {
         const user: Model = await this.findById(id);
         if (user.status.suspended) throw new BadRequestException('Account is suspended');
-        user.failedAttempts.push({ name: 'SUSPENDED', description: remarks, actor: actor._id, actorModel: actor.constructor.modelName });
+        user.failedAttempts.push({
+            name: 'SUSPENDED',
+            description: remarks,
+            actor: actor._id,
+            actorModel: actor.constructor.modelName,
+        });
         user.status.suspended = true;
         this.logoutAll(user);
         return await user.save();
