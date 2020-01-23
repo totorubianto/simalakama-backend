@@ -28,7 +28,7 @@ export class UsersService {
         private readonly filesService: FilesService,
     ) {}
 
-    //create service
+    // create service
     async create(createUserDto: CreateUserDto, client: any) {
         let createdUser = new this.userModel(createUserDto);
         await createdUser.save();
@@ -41,7 +41,7 @@ export class UsersService {
         return [loginData, createdUser, client];
     }
 
-    //login
+    // login
     async login(data: LoginUserDto, client: any) {
         let user = await this.userModel.findOne({ email: data.email }).exec();
         if (!user) throw new BadRequestException('Email not found!');
@@ -82,6 +82,7 @@ export class UsersService {
         return await users.save();
     }
 
+    // update password user
     async updatePassword(updatePassword: UpdatePasswordUserDto, user: any): Promise<User> {
         let userData: Model<User> = await this.findById(user._id);
         const password = await bcrypt.compare(updatePassword.oldPassword, userData.password)
@@ -176,6 +177,7 @@ export class UsersService {
 
     //------------------------------------ admin zone ---------------------------------------
 
+    // list user
     async list(
         skip?: number,
         limit?: number,
@@ -193,6 +195,7 @@ export class UsersService {
         return [merchants, skip, limit, count, filter];
     }
 
+    // suspend user if fraud
     async suspend(id: string, actor: any, remarks: string) {
         const user: Model = await this.findById(id);
         if (user.status.suspended) throw new BadRequestException('Account is suspended');
@@ -207,6 +210,7 @@ export class UsersService {
         return await user.save();
     }
 
+    // unsuspend if user has contact us admin
     async unsuspend(id: string, actor: any) {
         const user: Model = await this.findById(id);
         if (!user.status.suspended) throw new BadRequestException('Account is not suspended');
