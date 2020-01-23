@@ -161,12 +161,14 @@ export class UsersService {
         return await user.save();
     }
 
+    // logout user
     async logout(accessToken: string): Promise<boolean> {
         const logout = await this.authService.logout(accessToken);
         if (!logout) throw new InternalServerErrorException('Something went wrong!');
         return logout;
     }
 
+    // logout all device user
     async logoutAll(user: Model<User>) {
         const logout = await this.authService.logoutAll(user._id, user.constructor.modelName);
         return logout;

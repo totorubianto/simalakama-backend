@@ -107,6 +107,15 @@ export class UsersController {
         return {};
     }
 
+    //logout
+    @UserTypes(UserType.USER)
+    @HttpCode(200)
+    @Post('logout-all')
+    async logoutAll(@User() userData: any) {
+        this.usersService.logoutAll(userData);
+        return {};
+    }
+
     // @findAll
     @Get('find-all')
     async findAll() {
