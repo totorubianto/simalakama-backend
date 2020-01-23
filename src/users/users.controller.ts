@@ -34,6 +34,7 @@ import { ClientDevice } from '../global/interfaces/client-devices.interface';
 import { UserType } from '../global/enum';
 import { OParseIntPipe } from '../global/pipes/o-parse-int.pipe';
 import { ParseSortPipe } from '../global/pipes/parse-sort.pipe';
+import { UpdatePasswordUserDto } from './dto/update-password';
 
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -86,6 +87,13 @@ export class UsersController {
     @Post('update')
     async update(@Body() updateUserDto: UpdateUserDto, @User() data: any) {
         const user = await this.usersService.updateProfile(updateUserDto, data);
+        return { user };
+    }
+
+    // @uUpdate Profile
+    @Post('update-password')
+    async updatePassword(@Body() updateUserDto: UpdatePasswordUserDto, @User() data: any) {
+        const user = await this.usersService.updatePassword(updateUserDto, data);
         return { user };
     }
 

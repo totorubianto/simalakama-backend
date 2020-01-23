@@ -16,6 +16,7 @@ import { UserType } from '../global/enum/user-type.enum';
 import * as bcrypt from 'bcrypt';
 import { FileType } from '../global/enum/file-type.enum';
 import { FilesService } from '../files/files.service';
+import { UpdatePasswordUserDto } from './dto/update-password';
 
 @Injectable()
 export class UsersService {
@@ -79,6 +80,14 @@ export class UsersService {
         if (data.email) users.email = data.email;
 
         return await users.save();
+    }
+
+    async updatePassword(updatePassword: UpdatePasswordUserDto, user: any): Promise<User> {
+        let userData: Model<User> = await this.findById(user._id);
+        const password = await bcrypt.compare(updatePassword.oldPassword, userData.password)
+        if (!password) throw new BadRequestException("pastikan password lama anda sama")
+        userData.password = updatePassword.newPassword
+        return await userData.save();
     }
 
     // requestForgotPassword service
