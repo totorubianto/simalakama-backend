@@ -112,7 +112,7 @@ export class UsersService {
                 // Data to be sent to template engine.
                 to: user.firstName,
                 token: uuidv1(),
-                address: `${process.env.APP_URL}/forgot-password?token=${verification.token}`,
+                address: `${process.env.APP_PUBLIC}/forgot-password?token=${verification.token}`,
             },
         });
         return verification;
