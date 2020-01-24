@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsNumber, MinLength } from 'class-validator';
+import { IsString, IsEmail, IsNumber, MinLength, IsBoolean } from 'class-validator';
 import { DoesExist } from '../../global/validators/DoesExist';
 export class LoginUserDto {
   @IsEmail()
@@ -7,4 +7,6 @@ export class LoginUserDto {
   @IsString()
   @MinLength(6)
   readonly password: string;
+  @IsBoolean()
+  readonly keepLogin: string
 }

@@ -52,7 +52,9 @@ export class UsersService {
             actor: user._id,
             actorModel: UserType.USER,
         };
+       
         const res = await this.authService.login(payload);
+        if (!data.keepLogin) res.refreshToken = ""
         await this.updateDevice(client, user);
         return [res, user, client];
     }
