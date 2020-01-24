@@ -32,9 +32,10 @@ export class UsersService {
     async create(createUserDto: CreateUserDto, client: any) {
         let createdUser = new this.userModel(createUserDto);
         await createdUser.save();
-        const login = {
+        const login:LoginUserDto = {
             email: createUserDto.email,
             password: createUserDto.password,
+            keepLogin: true
         };
         const [loginData, user] = await this.login(login, client);
         await this.updateDevice(client, user);
@@ -43,6 +44,7 @@ export class UsersService {
 
     // login
     async login(data: LoginUserDto, client: any) {
+        console.log(data.keepLogin)
         let user = await this.userModel.findOne({ email: data.email }).exec();
         if (!user) throw new BadRequestException('Email not found!');
         let pass = await bcrypt.compare(data.password, user.password);
@@ -53,7 +55,7 @@ export class UsersService {
             actorModel: UserType.USER,
         };
        
-        const res = await this.authService.login(payload);
+        let res = await this.authService.login(payload);
         if (!data.keepLogin) res.refreshToken = ""
         await this.updateDevice(client, user);
         return [res, user, client];

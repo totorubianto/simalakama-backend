@@ -8,5 +8,5 @@ export class LoginUserDto {
   @MinLength(6)
   readonly password: string;
   @IsBoolean()
-  readonly keepLogin: string
+  readonly keepLogin: boolean
 }
