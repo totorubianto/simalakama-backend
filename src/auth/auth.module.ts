@@ -12,7 +12,7 @@ const passportModule = PassportModule.register({ defaultStrategy: 'jwt', session
     imports: [
         passportModule,
         MongooseModule.forFeature([{ name: 'Auth', schema: AuthSchema }]),
-        JwtModule.register({ secret: 'rahasia' }),
+        JwtModule.register({ secret: process.env.JWT_SECRET }),
     ],
     exports: [AuthService, passportModule],
     providers: [AuthService],
