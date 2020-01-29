@@ -23,6 +23,7 @@ import { UsersController } from './users/users.controller';
 import { AdminsModule } from './admins/admins.module';
 import { AdminsController } from './admins/admins.controller';
 import { GlobalHelper } from './global/helper/global.helper';
+import { CompaniesModule } from './companies/companies.module';
 @Module({
     imports: [
         AuthModule,
@@ -68,6 +69,7 @@ import { GlobalHelper } from './global/helper/global.helper';
         SeedModule,
         FilesModule,
         GlobalHelper,
+        CompaniesModule,
     ],
     controllers: [AppController],
     providers: [AppService, IsUniqueConstraint, DoesExistConstraint, AuthMiddleware],
