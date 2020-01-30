@@ -24,6 +24,8 @@ import { AdminsModule } from './admins/admins.module';
 import { AdminsController } from './admins/admins.controller';
 import { GlobalHelper } from './global/helper/global.helper';
 import { CompaniesModule } from './companies/companies.module';
+import { CompaniesSchema } from './companies/schemas/companies.schema';
+
 @Module({
     imports: [
         AuthModule,
@@ -41,6 +43,7 @@ import { CompaniesModule } from './companies/companies.module';
         ),
         MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
         MongooseModule.forFeature([{ name: 'Admin', schema: AdminSchema }]),
+        MongooseModule.forFeature([{ name: 'Companies', schema: CompaniesSchema }]),
         MailerModule.forRootAsync({
             useFactory: () => ({
                 transport: {

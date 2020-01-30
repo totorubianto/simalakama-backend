@@ -6,12 +6,13 @@ import { Model } from 'mongoose';
 import { UserType } from 'src/global/enum';
 import * as bcrypt from 'bcrypt';
 import { Companies } from './interfaces/companies.interface';
+import { CreateCompaniesDto } from './dto/register-companies.dto';
 
 @Injectable()
 export class CompaniesService {
     constructor(
         private readonly authService: AuthService,
-        @InjectModel('Companies') private userModel: Model<Companies>,
+        @InjectModel('Companies') private companies: Model<Companies>,
     ) {}
 
     async findById(id: string) {
@@ -20,7 +21,7 @@ export class CompaniesService {
     }
 
     async login(data: LoginUserDto, client: any) {
-        let user = await this.userModel.findOne({ email: data.email }).exec();
+        let user = await this.companies.findOne({ email: data.email }).exec();
         if (!user) throw new BadRequestException('Email not found!');
         let pass = await bcrypt.compare(data.password, user.password);
         if (!pass) throw new BadRequestException('Wrong password');
@@ -33,5 +34,18 @@ export class CompaniesService {
         let res = await this.authService.login(payload);
         if (!data.keepLogin) res.refreshToken = '';
         return [res, user, client];
+    }
+
+    // create service
+    async create(createUserDto: CreateCompaniesDto, client: any) {
+        let createdUser = new this.companies(createUserDto);
+        await createdUser.save();
+        const login: LoginUserDto = {
+            email: createUserDto.email,
+            password: createUserDto.password,
+            keepLogin: true,
+        };
+        const [loginData, user] = await this.login(login, client);
+        return [loginData, createdUser, client];
     }
 }
