@@ -131,6 +131,11 @@ export class UsersController {
         console.log(user);
         return this.usersService.findById(user._id);
     }
+    @UserTypes(UserType.USER)
+    @Get('add-friend/:id')
+    addFriend(@User() user: any, @Param('id') id): Promise<any[]> {
+        return this.usersService.addFriend(user, id);
+    }
 
     // Request Forgot Password
     @Post('request-forgot-password')

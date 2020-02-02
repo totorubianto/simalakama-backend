@@ -71,6 +71,9 @@ export class UsersService {
         return await this.userModel.findById(id).populate('avatar');
     }
 
+    async addFriend(user: Model<User>, id: string) {
+        console.log(id, user);
+    }
     // findall user service
     async findAll(query: any, user: any): Promise<User[]> {
         // for array use $nin
