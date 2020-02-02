@@ -32,10 +32,10 @@ export class UsersService {
     async create(createUserDto: CreateUserDto, client: any) {
         let createdUser = new this.userModel(createUserDto);
         await createdUser.save();
-        const login:LoginUserDto = {
+        const login: LoginUserDto = {
             email: createUserDto.email,
             password: createUserDto.password,
-            keepLogin: true
+            keepLogin: true,
         };
         const [loginData, user] = await this.login(login, client);
         await this.updateDevice(client, user);
@@ -44,7 +44,7 @@ export class UsersService {
 
     // login
     async login(data: LoginUserDto, client: any) {
-        console.log(data.keepLogin)
+        console.log(data.keepLogin);
         let user = await this.userModel.findOne({ email: data.email }).exec();
         if (!user) throw new BadRequestException('Email not found!');
         let pass = await bcrypt.compare(data.password, user.password);
@@ -54,9 +54,9 @@ export class UsersService {
             actor: user._id,
             actorModel: UserType.USER,
         };
-       
+
         let res = await this.authService.login(payload);
-        if (!data.keepLogin) res.refreshToken = ""
+        if (!data.keepLogin) res.refreshToken = '';
         await this.updateDevice(client, user);
         return [res, user, client];
     }
@@ -72,7 +72,8 @@ export class UsersService {
     }
 
     // findall user service
-    async findAll(query: any): Promise<User[]> {
+    async findAll(query: any, user: any): Promise<User[]> {
+        console.log(user);
         return await this.userModel.find(query);
     }
 
@@ -89,9 +90,9 @@ export class UsersService {
     // update password user
     async updatePassword(updatePassword: UpdatePasswordUserDto, user: any): Promise<User> {
         let userData: Model<User> = await this.findById(user._id);
-        const password = await bcrypt.compare(updatePassword.oldPassword, userData.password)
-        if (!password) throw new BadRequestException("pastikan password lama anda sama")
-        userData.password = updatePassword.newPassword
+        const password = await bcrypt.compare(updatePassword.oldPassword, userData.password);
+        if (!password) throw new BadRequestException('pastikan password lama anda sama');
+        userData.password = updatePassword.newPassword;
         return await userData.save();
     }
 

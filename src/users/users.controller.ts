@@ -102,7 +102,7 @@ export class UsersController {
     @HttpCode(200)
     @Post('logout')
     async logout(@Request() req) {
-        const token = req.headers.authorization.split(" ")[1];
+        const token = req.headers.authorization.split(' ')[1];
         this.usersService.logout(token);
         return {};
     }
@@ -117,9 +117,10 @@ export class UsersController {
     }
 
     // @findAll
+    @UserTypes(UserType.USER)
     @Get('find-all')
-    async findAll() {
-        const users = await this.usersService.findAll(null);
+    async findAll(@User() user) {
+        const users = await this.usersService.findAll(null, user);
         return { users };
     }
 
@@ -163,7 +164,7 @@ export class UsersController {
         const user = await this.usersService.uploadAvatar(avatar, userData);
         return { user };
     }
-    
+
     @UserTypes(UserType.ADMIN)
     @Get('list')
     async list(
@@ -173,7 +174,12 @@ export class UsersController {
         @Query('sort', new ParseSortPipe()) qSort,
         @Query('filter') qFilter,
     ) {
-        const [users, skip, limit, count, filter] = await this.usersService.list(qSkip, qLimit, qSort, qFilter);
+        const [users, skip, limit, count, filter] = await this.usersService.list(
+            qSkip,
+            qLimit,
+            qSort,
+            qFilter,
+        );
         return { users, skip, limit, count, filter };
     }
 }
