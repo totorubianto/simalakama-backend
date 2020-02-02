@@ -73,6 +73,8 @@ export class UsersService {
 
     async addFriend(user: Model<User>, id: string) {
         console.log(id, user);
+        throw new BadRequestException('dalam pengerjaan');
+        return [];
     }
     // findall user service
     async findAll(query: any, user: any): Promise<User[]> {
