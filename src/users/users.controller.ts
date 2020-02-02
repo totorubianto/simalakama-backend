@@ -119,14 +119,16 @@ export class UsersController {
     // @findAll
     @UserTypes(UserType.USER)
     @Get('find-all')
-    async findAll(@User() user) {
+    async findAll(@User() user: any) {
         const users = await this.usersService.findAll(null, user);
         return { users };
     }
 
     // @me
+    @UserTypes(UserType.USER)
     @Get('me')
     me(@User() user: any): Promise<any[]> {
+        console.log(user);
         return this.usersService.findById(user._id);
     }
 

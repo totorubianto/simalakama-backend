@@ -49,7 +49,6 @@ export class AuthMiddleware implements NestMiddleware {
             if (!user) {
                 throw new UnauthorizedException('Not authorized', 'middleware');
             }
-
             req['user'] = user;
             req['userType'] = decoded.actorModel;
 

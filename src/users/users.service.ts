@@ -73,8 +73,8 @@ export class UsersService {
 
     // findall user service
     async findAll(query: any, user: any): Promise<User[]> {
-        console.log(user);
-        return await this.userModel.find(query);
+        // for array use $nin
+        return await this.userModel.find({ _id: { $ne: user._id } });
     }
 
     // updateProfile service
