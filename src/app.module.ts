@@ -29,6 +29,7 @@ import { FriendsModule } from './friends/friends.module';
 import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { TransformInterceptor } from './global/interceptor/transform.interceptor';
 import { HttpExceptionFilter } from './global/filter/http-exception.filter';
+import { FriendsController } from './friends/friends.controller';
 
 @Module({
     imports: [
@@ -118,7 +119,7 @@ export class AppModule {
                 { path: 'admins/forgot-password/:token', method: RequestMethod.POST },
                 { path: 'admins/verify/:token', method: RequestMethod.GET },
             )
-            .forRoutes(UsersController, AdminsController);
+            .forRoutes(UsersController, AdminsController, FriendsController);
     }
     async onApplicationBootstrap() {
         this.seedService.run();

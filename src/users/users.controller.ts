@@ -85,6 +85,7 @@ export class UsersController {
     }
 
     // @Update Profile
+    @UserTypes(UserType.USER)
     @Post('update')
     async update(@Body() updateUserDto: UpdateUserDto, @User() data: any) {
         const user = await this.usersService.updateProfile(updateUserDto, data);
@@ -92,6 +93,7 @@ export class UsersController {
     }
 
     // @Update password
+    @UserTypes(UserType.USER)
     @Post('update-password')
     async updatePassword(@Body() updateUserDto: UpdatePasswordUserDto, @User() data: any) {
         const user = await this.usersService.updatePassword(updateUserDto, data);
@@ -159,6 +161,7 @@ export class UsersController {
     }
 
     // uploadAvatar
+    @UserTypes(UserType.USER)
     @Post('upload-avatar')
     @UseInterceptors(AnyFilesInterceptor())
     async uploadedFile(@UploadedFiles() files = [], @User() userData: any) {
