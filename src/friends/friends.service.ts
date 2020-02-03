@@ -40,9 +40,12 @@ export class FriendsService {
         let friend;
         switch (status) {
             case FriendType.PENDING:
-                friend = await this.friendModel.find({
-                    $and: [{ recipient: user._id }, { status: FriendType.PENDING }],
-                });
+                friend = await this.friendModel
+                    .find({
+                        $and: [{ recipient: user._id }, { status: FriendType.PENDING }],
+                    })
+                    .populate('recipient')
+                    .populate('requester');
                 break;
             case FriendType.FRIEND:
                 friend = await this.friendModel
