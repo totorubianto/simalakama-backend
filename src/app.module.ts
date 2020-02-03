@@ -25,6 +25,7 @@ import { AdminsController } from './admins/admins.controller';
 import { GlobalHelper } from './global/helper/global.helper';
 import { CompaniesModule } from './companies/companies.module';
 import { CompaniesSchema } from './companies/schemas/companies.schema';
+import { FriendsModule } from './friends/friends.module';
 
 @Module({
     imports: [
@@ -73,6 +74,7 @@ import { CompaniesSchema } from './companies/schemas/companies.schema';
         FilesModule,
         GlobalHelper,
         CompaniesModule,
+        FriendsModule,
     ],
     controllers: [AppController],
     providers: [AppService, IsUniqueConstraint, DoesExistConstraint, AuthMiddleware],
