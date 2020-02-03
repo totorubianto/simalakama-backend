@@ -26,6 +26,9 @@ import { GlobalHelper } from './global/helper/global.helper';
 import { CompaniesModule } from './companies/companies.module';
 import { CompaniesSchema } from './companies/schemas/companies.schema';
 import { FriendsModule } from './friends/friends.module';
+import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
+import { TransformInterceptor } from './global/interceptor/transform.interceptor';
+import { HttpExceptionFilter } from './global/filter/http-exception.filter';
 
 @Module({
     imports: [
@@ -77,7 +80,20 @@ import { FriendsModule } from './friends/friends.module';
         FriendsModule,
     ],
     controllers: [AppController],
-    providers: [AppService, IsUniqueConstraint, DoesExistConstraint, AuthMiddleware],
+    providers: [
+        AppService,
+        IsUniqueConstraint,
+        DoesExistConstraint,
+        AuthMiddleware,
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: TransformInterceptor,
+        },
+        {
+            provide: APP_FILTER,
+            useClass: HttpExceptionFilter,
+        },
+    ],
 })
 export class AppModule {
     constructor(

@@ -11,6 +11,7 @@ import {
     Headers,
     Request,
     HttpCode,
+    UseGuards,
 } from '@nestjs/common';
 import { TransformInterceptor } from '../global/interceptor/transform.interceptor';
 import { HttpExceptionFilter } from '../global/filter/http-exception.filter';
@@ -24,11 +25,10 @@ import { OParseIntPipe } from '../global/pipes/o-parse-int.pipe';
 import { ParseSortPipe } from '../global/pipes/parse-sort.pipe';
 import { ParseFilterPipe } from '../global/pipes/parse-filter.pipe';
 import { ParseSearchPipe } from '../global/pipes/parse-search.pipe';
+import { UserTypesGuard } from 'src/global/guard/user-types.guard';
 
+@UseGuards(UserTypesGuard)
 @Controller('admins')
-@UsePipes(ValidationPipe)
-@UseFilters(HttpExceptionFilter)
-@UseInterceptors(TransformInterceptor)
 export class AdminsController {
     constructor(private readonly adminsService: AdminsService) {}
 

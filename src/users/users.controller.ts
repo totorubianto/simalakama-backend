@@ -14,6 +14,7 @@ import {
     UploadedFiles,
     Query,
     HttpCode,
+    UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -35,11 +36,10 @@ import { UserType } from '../global/enum';
 import { OParseIntPipe } from '../global/pipes/o-parse-int.pipe';
 import { ParseSortPipe } from '../global/pipes/parse-sort.pipe';
 import { UpdatePasswordUserDto } from './dto/update-password';
+import { UserTypesGuard } from 'src/global/guard/user-types.guard';
 
+@UseGuards(UserTypesGuard)
 @Controller('users')
-@UsePipes(ValidationPipe)
-@UseFilters(HttpExceptionFilter)
-@UseInterceptors(TransformInterceptor)
 export class UsersController {
     constructor(
         private usersService: UsersService,
@@ -64,6 +64,7 @@ export class UsersController {
         const [register, user, client] = await this.usersService.create(createUserDto, clientData);
         return { register, user, client };
     }
+
     // @Login
     @Post('login')
     async login(
@@ -83,14 +84,14 @@ export class UsersController {
         return { login, user, client };
     }
 
-    // @uUpdate Profile
+    // @Update Profile
     @Post('update')
     async update(@Body() updateUserDto: UpdateUserDto, @User() data: any) {
         const user = await this.usersService.updateProfile(updateUserDto, data);
         return { user };
     }
 
-    // @uUpdate Profile
+    // @Update password
     @Post('update-password')
     async updatePassword(@Body() updateUserDto: UpdatePasswordUserDto, @User() data: any) {
         const user = await this.usersService.updatePassword(updateUserDto, data);
@@ -128,15 +129,7 @@ export class UsersController {
     @UserTypes(UserType.USER)
     @Get('me')
     me(@User() user: any): Promise<any[]> {
-        console.log(user);
         return this.usersService.findById(user._id);
-    }
-    @UserTypes(UserType.USER)
-    @HttpCode(200)
-    @Post('add-friend/:id')
-    async addFriend(@User() user: any, @Param('id') id) {
-        const users = await this.usersService.addFriend(user, id);
-        return {};
     }
 
     // Request Forgot Password

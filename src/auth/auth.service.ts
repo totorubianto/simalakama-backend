@@ -43,7 +43,6 @@ export class AuthService {
         const data = JWT(auth.accessToken);
         const expiresIn = data.exp * 1000;
         let compareDate: boolean = expiresIn > Date.now();
-        console.log(true);
         if (!compareDate) {
             await this.authModel.deleteOne(accessToken);
             throw new UnauthorizedException('Session login anda sudah habis');

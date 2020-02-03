@@ -44,7 +44,6 @@ export class UsersService {
 
     // login
     async login(data: LoginUserDto, client: any) {
-        console.log(data.keepLogin);
         let user = await this.userModel.findOne({ email: data.email }).exec();
         if (!user) throw new BadRequestException('Email not found!');
         let pass = await bcrypt.compare(data.password, user.password);
@@ -71,11 +70,6 @@ export class UsersService {
         return await this.userModel.findById(id).populate('avatar');
     }
 
-    async addFriend(user: Model<User>, id: string) {
-        console.log(id, user);
-        throw new BadRequestException('dalam pengerjaan');
-        return [];
-    }
     // findall user service
     async findAll(query: any, user: any): Promise<User[]> {
         // for array use $nin

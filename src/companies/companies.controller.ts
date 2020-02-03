@@ -1,9 +1,11 @@
-import { Controller, Post, Body, Headers, Request } from '@nestjs/common';
+import { Controller, Post, Body, Headers, Request, UseGuards } from '@nestjs/common';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
 import { ClientDevice } from 'src/global/interfaces/client-devices.interface';
 import { CompaniesService } from './companies.service';
 import { CreateCompaniesDto } from './dto/register-companies.dto';
+import { UserTypesGuard } from 'src/global/guard/user-types.guard';
 
+@UseGuards(UserTypesGuard)
 @Controller('companies')
 export class CompaniesController {
     constructor(private companiesService: CompaniesService) {}
