@@ -47,6 +47,14 @@ export class FriendsController {
         return { friend };
     }
 
+    // @findAll
+    @UserTypes(UserType.USER)
+    @Get('find-all')
+    async findAll(@User() user: any) {
+        const users = await this.friendsService.findAll(null, user);
+        return { users };
+    }
+
     // @confirm friend
     @UserTypes(UserType.USER)
     @Post('confirm/:idFriend')

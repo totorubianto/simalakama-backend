@@ -70,11 +70,11 @@ export class UsersService {
         return await this.userModel.findById(id).populate('avatar');
     }
 
-    // findall user service
-    async findAll(query: any, user: any): Promise<User[]> {
-        // for array use $nin
-        return await this.userModel.find({ _id: { $ne: user._id } });
-    }
+    // // findall user service
+    // async findAll(query: any, user: any): Promise<User[]> {
+    //     // for array use $nin
+    //     return await this.userModel.find({ _id: { $ne: user._id } });
+    // }
 
     // updateProfile service
     async updateProfile(data: any, user: any): Promise<User> {

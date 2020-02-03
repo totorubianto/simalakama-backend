@@ -119,13 +119,13 @@ export class UsersController {
         return {};
     }
 
-    // @findAll
-    @UserTypes(UserType.USER)
-    @Get('find-all')
-    async findAll(@User() user: any) {
-        const users = await this.usersService.findAll(null, user);
-        return { users };
-    }
+    // // @findAll
+    // @UserTypes(UserType.USER)
+    // @Get('find-all')
+    // async findAll(@User() user: any) {
+    //     const users = await this.usersService.findAll(null, user);
+    //     return { users };
+    // }
 
     // @me
     @UserTypes(UserType.USER)

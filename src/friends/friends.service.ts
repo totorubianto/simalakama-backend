@@ -9,7 +9,9 @@ import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class FriendsService {
     constructor(
-        @InjectModel('Friend') private friendModel: Model<Friend>, // private readonly usersService: UsersService,
+        @InjectModel('Friend') private friendModel: Model<Friend>,
+        @InjectModel('User') private userModel: Model<Friend>,
+        private readonly usersService: UsersService,
     ) {}
 
     async findOne(query: any) {
@@ -62,9 +64,24 @@ export class FriendsService {
         return friend;
     }
 
+    // findall user service
+    async findAll(query: any, user: Model<User>): Promise<User[]> {
+        const friend = await this.getFriend(user, FriendType.FRIEND);
+        let arrayNin = [];
+        friend.map(data => arrayNin.push(data.recipient._id));
+        friend.map(data => arrayNin.push(data.requester._id));
+        let unique = [...new Set(arrayNin)];
+
+        // for array use $nin
+        const users = await this.userModel.find({ _id: { $nin: unique } });
+        return users;
+    }
+
     async addFriend(user: Model<User>, id: string) {
         if (user._id.toString() === id)
             throw new BadRequestException('tidak dapat menambahkan diri sendiri sebagai teman');
+        const users = await this.usersService.findById(id);
+        if (!users) throw new BadRequestException('user tidak ada');
         const query = {
             $or: [
                 { requester: user._id, recipient: id },
@@ -72,10 +89,17 @@ export class FriendsService {
             ],
         };
         const exist = await this.findOne(query);
-        if (exist.status === FriendType.FRIEND)
-            throw new BadRequestException('Sudah menjadi teman');
-        if (exist.status === FriendType.PENDING)
-            throw new BadRequestException('Menunggu konfirmasi');
+        switch (exist && exist.status) {
+            case FriendType.FRIEND:
+                throw new BadRequestException('Sudah menjadi teman');
+                break;
+            case FriendType.PENDING:
+                throw new BadRequestException('Menunggu konfirmasi');
+                break;
+
+            default:
+                break;
+        }
         const friend = new this.friendModel({
             requester: user._id,
             recipient: id,
