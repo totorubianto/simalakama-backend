@@ -68,6 +68,7 @@ export class FriendsService {
         let arrayNin = [];
         friend.map(data => arrayNin.push(data.recipient._id));
         friend.map(data => arrayNin.push(data.requester._id));
+        arrayNin.push(user._id);
         let unique = [...new Set(arrayNin)];
 
         // for array use $nin

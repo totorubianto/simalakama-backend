@@ -81,7 +81,6 @@ export class UsersService {
         if (data.firstName) users.firstName = data.firstName;
         if (data.lastName) users.lastName = data.lastName;
         if (data.email) users.email = data.email;
-
         return await users.save();
     }
 
