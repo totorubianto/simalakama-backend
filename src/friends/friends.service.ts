@@ -72,6 +72,7 @@ export class FriendsService {
         let unique = [...new Set(arrayNin)];
 
         // for array use $nin
+        // for object use $ni
         const users = await this.userModel.find({ _id: { $nin: unique } });
         return users;
     }
