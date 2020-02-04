@@ -36,10 +36,16 @@ class GlobalHelper {
         fsPromise.unlink(filePath).catch(err => console.log(err));
         return true;
     }
+
     static removeLocalFileDocument(key: string) {
         const filePath = path.join(GlobalHelper.uploadPathDocument, key);
         fsPromise.unlink(filePath).catch(err => console.log(err));
         return true;
+    }
+
+    static friend(friend) {
+        console.log(friend);
+        return 'toto';
     }
 }
 

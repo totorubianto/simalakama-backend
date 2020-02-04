@@ -36,40 +36,35 @@ export class FriendsService {
         return friend;
     }
 
-    async getFriend(user: Model<User>, status: string) {
-        let friend;
-        switch (status) {
-            case FriendType.PENDING:
-                friend = await this.friendModel
-                    .find({
-                        $and: [{ recipient: user._id }, { status: FriendType.PENDING }],
-                    })
-                    .populate('recipient')
-                    .populate('requester');
-                break;
-            case FriendType.FRIEND:
-                friend = await this.friendModel
-                    .find({
-                        $and: [
-                            {
-                                $or: [{ recipient: user._id }, { requester: user._id }],
-                            },
-                            { status: FriendType.FRIEND },
-                        ],
-                    })
-                    .populate('recipient')
-                    .populate('requester');
-                break;
-            default:
-                friend = await this.friendModel.find();
-                break;
-        }
+    async listFriend(user: Model<User>) {
+        let friend = await this.friendModel
+            .find({
+                $and: [
+                    {
+                        $or: [{ recipient: user._id }, { requester: user._id }],
+                    },
+                    { status: FriendType.FRIEND },
+                ],
+            })
+            .populate('recipient')
+            .populate('requester');
+
+        return friend;
+    }
+
+    async listPending(user: Model<User>) {
+        let friend = await this.friendModel
+            .find({
+                $and: [{ recipient: user._id }, { status: FriendType.PENDING }],
+            })
+            .populate('recipient')
+            .populate({ path: 'requester', populate: { path: 'avatar' } });
         return friend;
     }
 
     // findall user service
     async findAll(query: any, user: Model<User>): Promise<User[]> {
-        const friend = await this.getFriend(user, FriendType.FRIEND);
+        const friend = await this.listFriend(user);
         let arrayNin = [];
         friend.map(data => arrayNin.push(data.recipient._id));
         friend.map(data => arrayNin.push(data.requester._id));

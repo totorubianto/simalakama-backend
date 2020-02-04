@@ -32,11 +32,20 @@ export class FriendsController {
         return {};
     }
 
+    // @list Friend
     @UserTypes(UserType.USER)
-    @Get('get-friend')
-    async getFriend(@User() user: any, @Query('status') status) {
-        const friend = await this.friendsService.getFriend(user, status);
+    @Get('list-friend')
+    async listFriend(@User() user: any) {
+        const friend = await this.friendsService.listFriend(user);
         return friend;
+    }
+
+    // @list Pending
+    @UserTypes(UserType.USER)
+    @Get('list-pending')
+    async listPending(@User() user: any) {
+        const users = await this.friendsService.listPending(user);
+        return { users };
     }
 
     // @reject
