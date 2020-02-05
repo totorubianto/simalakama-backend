@@ -24,8 +24,10 @@ export class FriendsService {
     }
 
     async reject(user: Model<User>, id: string) {
-        const friend = await this.friendModel.find();
-        return friend;
+        let friend: Model<Friend> = await this.findById(id);
+        if (!friend) throw new BadRequestException('tidak ditemukan request pertemanan');
+        await friend.remove();
+        return {};
     }
 
     async confirm(user: Model<User>, id: string) {
@@ -48,13 +50,50 @@ export class FriendsService {
                     ],
                 },
             },
+
             {
                 $addFields: {
-                    friends: {
-                        $cond: [{ recipient: user._id }, '$requester', '$recipient'],
+                    friend: {
+                        $cond: [{ $eq: ['$requester', user._id] }, '$recipient', '$requester'],
                     },
                 },
             },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'requester',
+                    foreignField: '_id',
+                    as: 'requester',
+                },
+            },
+            { $unwind: { path: '$requester', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'recipient',
+                    foreignField: '_id',
+                    as: 'recipient',
+                },
+            },
+            { $unwind: { path: '$recipient', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'friend',
+                    foreignField: '_id',
+                    as: 'friend',
+                },
+            },
+            { $unwind: { path: '$friend', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'files',
+                    localField: 'friend.avatar',
+                    foreignField: '_id',
+                    as: 'friend.avatar',
+                },
+            },
+            { $unwind: { path: '$friend.avatar', preserveNullAndEmptyArrays: true } },
         ]);
 
         return friend;

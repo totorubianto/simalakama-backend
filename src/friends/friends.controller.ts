@@ -48,14 +48,6 @@ export class FriendsController {
         return { users };
     }
 
-    // @reject
-    @UserTypes(UserType.USER)
-    @Post('reject/:idFriend')
-    async reject(@User() user, @Param('idFriend') id) {
-        const friend = await this.friendsService.reject(user, id);
-        return { friend };
-    }
-
     // @findAll
     @UserTypes(UserType.USER)
     @Get('find-all')
@@ -69,6 +61,15 @@ export class FriendsController {
     @Post('confirm/:idFriend')
     async confirm(@User() user, @Param('idFriend') id) {
         const friend = await this.friendsService.confirm(user, id);
-        return { friend };
+        return {};
+    }
+
+    // @reject
+    @UserTypes(UserType.USER)
+    @HttpCode(200)
+    @Post('reject/:idFriend')
+    async reject(@User() user, @Param('idFriend') id) {
+        const friend = await this.friendsService.reject(user, id);
+        return {};
     }
 }
