@@ -26,6 +26,7 @@ export const UserSchema = new mongoose.Schema(
         },
         username: {
             type: String,
+            require: true,
             slug: ['firstName', 'lastName'],
             unique: true,
             sparse: true,
