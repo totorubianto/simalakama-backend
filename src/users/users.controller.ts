@@ -127,6 +127,14 @@ export class UsersController {
         return { users };
     }
 
+    // @findAll
+    @UserTypes(UserType.USER)
+    @Get('username/:username')
+    async getByUsername(@User() users: any, @Param('username') username) {
+        const user = await this.usersService.getByUsername(username);
+        return { user };
+    }
+
     // @me
     @UserTypes(UserType.USER)
     @Get('me')

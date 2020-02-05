@@ -75,6 +75,13 @@ export class UsersService {
         return await this.userModel.find();
     }
 
+    //get by username
+    async getByUsername(username: string) {
+        const user = await this.userModel.findOne({ username: username }).populate('avatar');
+        if (!user) throw new BadRequestException('tidak ditemukan user');
+        return user;
+    }
+
     // updateProfile service
     async updateProfile(data: any, user: any): Promise<User> {
         let users: Model<User> = await this.findById(user._id);
