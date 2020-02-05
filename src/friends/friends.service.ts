@@ -37,17 +37,25 @@ export class FriendsService {
     }
 
     async listFriend(user: Model<User>) {
-        let friend = await this.friendModel
-            .find({
-                $and: [
-                    {
-                        $or: [{ recipient: user._id }, { requester: user._id }],
+        let friend = await this.friendModel.aggregate([
+            {
+                $match: {
+                    $and: [
+                        {
+                            $or: [{ recipient: user._id }, { requester: user._id }],
+                        },
+                        { status: FriendType.FRIEND },
+                    ],
+                },
+            },
+            {
+                $addFields: {
+                    friends: {
+                        $cond: [{ recipient: user._id }, '$requester', '$recipient'],
                     },
-                    { status: FriendType.FRIEND },
-                ],
-            })
-            .populate('recipient')
-            .populate('requester');
+                },
+            },
+        ]);
 
         return friend;
     }
