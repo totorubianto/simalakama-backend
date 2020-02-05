@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as slug from 'mongoose-slug-updater';
+mongoose.plugin(slug);
 export const UserSchema = new mongoose.Schema(
     {
         email: {
