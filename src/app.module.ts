@@ -108,6 +108,7 @@ export class AppModule {
                 // users
                 { path: 'users/login', method: RequestMethod.POST },
                 { path: 'users/register', method: RequestMethod.POST },
+                { path: 'users/refresh', method: RequestMethod.POST },
                 // { path: 'users/find-all', method: RequestMethod.GET },
                 { path: 'users/request-forgot-password', method: RequestMethod.POST },
                 { path: 'users/forgot-password/:token', method: RequestMethod.POST },

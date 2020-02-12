@@ -60,6 +60,14 @@ export class UsersService {
         return [res, user, client];
     }
 
+    //refresh token
+    async refresh(accessToken: string, refreshToken: string): Promise<[User, string, string]> {
+        const auth = await this.authService.refresh(accessToken, refreshToken);
+        const user = await this.findById(auth.morph);
+
+        return [user, auth.accessToken, auth.refreshToken];
+    }
+
     // findall user service
     async findOne(query): Promise<User> {
         return await this.userModel.findOne(query);

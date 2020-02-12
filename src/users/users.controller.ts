@@ -84,6 +84,20 @@ export class UsersController {
         return { login, user, client };
     }
 
+    // refresh token
+    @UserTypes(UserType.USER)
+    @HttpCode(200)
+    @Post('refresh')
+    async refresh(@Request() req, @Body('refreshToken') refreshToken) {
+        const authorization = req.headers.authorization || '';
+        const accessToken = authorization.split(' ')[1];
+        const [user, nAccessToken, nRefreshToken] = await this.usersService.refresh(
+            accessToken,
+            refreshToken,
+        );
+        return { accessToken: nAccessToken, refreshToken: nRefreshToken, user: user };
+    }
+
     // @Update Profile
     @UserTypes(UserType.USER)
     @Post('update')

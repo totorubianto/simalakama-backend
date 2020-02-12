@@ -37,21 +37,24 @@ export class AuthService {
     }
 
     // refresh token (deprecated)
-    async refresh(accessToken: string, refreshToken: string) {
-        let auth = await this.findTokenEmail(accessToken);
-        if (!auth) throw new UnauthorizedException('Session login anda sudah habis');
-        const data = JWT(auth.accessToken);
-        const expiresIn = data.exp * 1000;
-        let compareDate: boolean = expiresIn > Date.now();
-        if (!compareDate) {
-            await this.authModel.deleteOne(accessToken);
-            throw new UnauthorizedException('Session login anda sudah habis');
-        }
-        const payloadData = this.getPayloadFromToken(accessToken);
-        const [nAccessToken, nRefreshToken] = this.generateToken(payloadData);
+    async refresh(accessToken: string, refreshToken: string): Promise<Model<Auth>> {
+        let auth = await this.findByToken(accessToken);
+        if (!auth) throw new UnauthorizedException('Not authorized');
+        this.verify(auth.refreshToken).catch(reason => {
+            const message =
+                reason.name == 'TokenExpiredError' ? 'Refresh token expired' : reason.message;
+            throw new UnauthorizedException(message);
+        });
+        if (auth.refreshToken !== refreshToken)
+            throw new BadRequestException('Invalid refresh token.');
+
+        const payload = this.getPayloadFromToken(accessToken);
+        const [nAccessToken, nRefreshToken] = this.generateToken(payload);
+
         auth.accessToken = nAccessToken;
         auth.refreshToken = nRefreshToken;
         await auth.save();
+
         return auth;
     }
 
