@@ -30,6 +30,7 @@ import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { TransformInterceptor } from './global/interceptor/transform.interceptor';
 import { HttpExceptionFilter } from './global/filter/http-exception.filter';
 import { FriendsController } from './friends/friends.controller';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
     imports: [
@@ -79,6 +80,7 @@ import { FriendsController } from './friends/friends.controller';
         GlobalHelper,
         CompaniesModule,
         FriendsModule,
+        PostsModule,
     ],
     controllers: [AppController],
     providers: [
