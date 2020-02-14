@@ -106,7 +106,6 @@ import { SeedService } from './seed/seed.service';
             provide: APP_FILTER,
             useClass: HttpExceptionFilter,
         },
-        PostsService,
     ],
 })
 export class AppModule {
