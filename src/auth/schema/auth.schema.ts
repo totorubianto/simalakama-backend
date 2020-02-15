@@ -12,8 +12,8 @@ export const AuthSchema = new mongoose.Schema({
     },
     actor: {
         type: Schema.Types.ObjectId,
-        ref: 'users',
         required: true,
+        refPath: 'actorModel',
     },
     actorModel: {
         type: String,

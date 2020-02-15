@@ -1,36 +1,47 @@
+// config on top
 import { ConfigModule } from './config/config.module';
+
+//import core
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
-import { VerificationModule } from './verification/verification.module';
 import { IsUniqueConstraint } from './global/validators/IsUnique';
 import { DoesExistConstraint } from './global/validators/DoesExist';
-import { CronService } from './cron/cron.service';
-import { CronModule } from './cron/cron.module';
-import { UserSchema } from './users/schema/user.schema';
-import { AdminSchema } from './admins/schema/admin.schema';
 import { AuthMiddleware } from './global/middleware/auth.middleware';
-import { SeedModule } from './seed/seed.module';
-import { SeedService } from './seed/seed.service';
-import { FilesModule } from './files/files.module';
-
-//import controller
-import { UsersController } from './users/users.controller';
-import { AdminsModule } from './admins/admins.module';
-import { AdminsController } from './admins/admins.controller';
 import { GlobalHelper } from './global/helper/global.helper';
-import { CompaniesModule } from './companies/companies.module';
-import { CompaniesSchema } from './companies/schemas/companies.schema';
-import { FriendsModule } from './friends/friends.module';
 import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { TransformInterceptor } from './global/interceptor/transform.interceptor';
 import { HttpExceptionFilter } from './global/filter/http-exception.filter';
-import { FriendsController } from './friends/friends.controller';
+
+//import schema
+import { UserSchema } from './users/schema/user.schema';
+import { AdminSchema } from './admins/schema/admin.schema';
+
+// import module
+import { AuthModule } from './auth/auth.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { FriendsModule } from './friends/friends.module';
+import { CompaniesModule } from './companies/companies.module';
+import { AdminsModule } from './admins/admins.module';
+import { FilesModule } from './files/files.module';
+import { CronModule } from './cron/cron.module';
+import { SeedModule } from './seed/seed.module';
+import { UsersModule } from './users/users.module';
+import { VerificationModule } from './verification/verification.module';
 import { PostsModule } from './posts/posts.module';
+
+//import controller
+import { AppController } from './app.controller';
+import { UsersController } from './users/users.controller';
+import { AdminsController } from './admins/admins.controller';
+import { CompaniesSchema } from './companies/schemas/companies.schema';
+import { FriendsController } from './friends/friends.controller';
+
+//import service
+import { AppService } from './app.service';
+import { PostsService } from './posts/posts.service';
+import { CronService } from './cron/cron.service';
+import { SeedService } from './seed/seed.service';
+import { PostsController } from './posts/posts.controller';
 
 @Module({
     imports: [
@@ -107,7 +118,7 @@ export class AppModule {
         consumer
             .apply(AuthMiddleware)
             .exclude(
-                // users
+                // users endpoin
                 { path: 'users/login', method: RequestMethod.POST },
                 { path: 'users/register', method: RequestMethod.POST },
                 { path: 'users/refresh', method: RequestMethod.POST },
@@ -115,14 +126,14 @@ export class AppModule {
                 { path: 'users/request-forgot-password', method: RequestMethod.POST },
                 { path: 'users/forgot-password/:token', method: RequestMethod.POST },
                 { path: 'users/verify/:token', method: RequestMethod.GET },
-                //admin
+                //admin endpoin
                 { path: 'admins/login', method: RequestMethod.POST },
                 { path: 'admins/register', method: RequestMethod.POST },
                 { path: 'admins/request-forgot-password', method: RequestMethod.POST },
                 { path: 'admins/forgot-password/:token', method: RequestMethod.POST },
                 { path: 'admins/verify/:token', method: RequestMethod.GET },
             )
-            .forRoutes(UsersController, AdminsController, FriendsController);
+            .forRoutes(UsersController, AdminsController, FriendsController, PostsController);
     }
     async onApplicationBootstrap() {
         this.seedService.run();
