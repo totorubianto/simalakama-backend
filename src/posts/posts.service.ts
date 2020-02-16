@@ -19,6 +19,9 @@ export class PostsService {
             actorModel: user.constructor.modelName,
             content: createPostDto.contents,
         });
+        if (files.length > 5) {
+            throw new BadRequestException('File tidak boleh melebihi 5');
+        }
         if (!this.filesService.isImagesArr(files)) {
             throw new BadRequestException('Invalid image file type!');
         }
@@ -48,7 +51,10 @@ export class PostsService {
     // get post
     async getPost(skip?: number, limit?: number): Promise<[User[], number, number, number]> {
         let query = {};
-        let cursor = this.postModel.find(query).populate('images');
+        let cursor = this.postModel
+            .find(query)
+            .populate('images')
+            .populate('actor');
         if (skip) cursor.skip(skip);
         if (limit) cursor.limit(limit);
         const posts = await cursor.exec();

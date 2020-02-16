@@ -36,4 +36,4 @@ lerna-debug.log*
 .env
 package-lock.json
 
-public/upload
+# public/upload
