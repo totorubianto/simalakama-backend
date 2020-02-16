@@ -44,4 +44,16 @@ export class PostsService {
         }
         return images;
     }
+
+    // get post
+    async getPost(skip?: number, limit?: number): Promise<[User[], number, number, number]> {
+        let query = {};
+        let cursor = this.postModel.find(query).populate('images');
+        if (skip) cursor.skip(skip);
+        if (limit) cursor.limit(limit);
+        const posts = await cursor.exec();
+        const count = await this.postModel.countDocuments(query);
+
+        return [posts, skip, limit, count];
+    }
 }
