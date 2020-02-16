@@ -1,4 +1,4 @@
-import { Injectable, PayloadTooLargeException } from '@nestjs/common';
+import { Injectable, PayloadTooLargeException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post } from './interfaces/post.interface';
@@ -19,6 +19,9 @@ export class PostsService {
             actorModel: user.constructor.modelName,
             content: createPostDto.contents,
         });
+        if (!this.filesService.isImagesArr(files)) {
+            throw new BadRequestException('Invalid image file type!');
+        }
         const maxSizeMB = 1;
         if (this.filesService.maxSizeArr(maxSizeMB, files)) {
             throw new PayloadTooLargeException('Payload to larage image!');

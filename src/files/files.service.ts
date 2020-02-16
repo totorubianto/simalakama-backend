@@ -94,6 +94,15 @@ export class FilesService {
         });
     }
 
+    isImagesArr(files) {
+        const imageExt = ['jpg', 'png', 'jpeg'];
+        return files.every(file => {
+            if (!file) return false;
+            const ext = file.originalname.split('.').pop();
+            return imageExt.includes(ext);
+        });
+    }
+
     maxSize(size: number, ...files) {
         const max = size * (1024 * 1024);
         return files.every(file => {
