@@ -18,26 +18,13 @@ export class FriendsService {
         const friend = await this.friendModel.findOne(query);
         return friend;
     }
+
     async findById(id: string) {
         const friend = await this.friendModel.findById(id);
         return friend;
     }
 
-    async reject(user: Model<User>, id: string) {
-        let friend: Model<Friend> = await this.findById(id);
-        if (!friend) throw new BadRequestException('tidak ditemukan request pertemanan');
-        await friend.remove();
-        return {};
-    }
-
-    async confirm(user: Model<User>, id: string) {
-        const friend: Model<Friend> = await this.findById(id);
-        if (!friend) throw new BadRequestException('friendship not found');
-        friend.status = FriendType.FRIEND;
-        await friend.save();
-        return friend;
-    }
-
+    // get friend and add virtual field "friend"
     async getFriend(user: Model<User>) {
         let friend = await this.friendModel.aggregate([
             {
@@ -99,30 +86,7 @@ export class FriendsService {
         return friend;
     }
 
-    async getPending(user: Model<User>) {
-        let friend = await this.friendModel
-            .find({
-                $and: [{ recipient: user._id }, { status: FriendType.PENDING }],
-            })
-            .populate('recipient')
-            .populate({ path: 'requester', populate: { path: 'avatar' } });
-        return friend;
-    }
-
-    // getall user service
-    async getAll(query: any, user: Model<User>): Promise<User[]> {
-        const friend = await this.getFriend(user);
-        let arrayNin = [];
-        friend.map(data => arrayNin.push(data.friend._id));
-        arrayNin.push(user._id);
-        let unique = [...new Set(arrayNin)];
-
-        // for array use $nin
-        // for object use $ni
-        const users = await this.userModel.find({ _id: { $nin: unique } });
-        return users;
-    }
-
+    //route for add friend
     async addFriend(user: Model<User>, id: string) {
         if (user._id.toString() === id)
             throw new BadRequestException('tidak dapat menambahkan diri sendiri sebagai teman');
@@ -153,5 +117,47 @@ export class FriendsService {
         });
         await friend.save();
         return friend;
+    }
+
+    //get pending friend to confirm
+    async getPending(user: Model<User>) {
+        let friend = await this.friendModel
+            .find({
+                $and: [{ recipient: user._id }, { status: FriendType.PENDING }],
+            })
+            .populate('recipient')
+            .populate({ path: 'requester', populate: { path: 'avatar' } });
+        return friend;
+    }
+
+    //confirm friend
+    async confirm(user: Model<User>, id: string) {
+        const friend: Model<Friend> = await this.findById(id);
+        if (!friend) throw new BadRequestException('friendship not found');
+        friend.status = FriendType.FRIEND;
+        await friend.save();
+        return friend;
+    }
+
+    //reject user
+    async reject(user: Model<User>, id: string) {
+        let friend: Model<Friend> = await this.findById(id);
+        if (!friend) throw new BadRequestException('tidak ditemukan request pertemanan');
+        await friend.remove();
+        return {};
+    }
+
+    // getall user service
+    async getAll(query: any, user: Model<User>): Promise<User[]> {
+        const friend = await this.getFriend(user);
+        let arrayNin = [];
+        friend.map(data => arrayNin.push(data.friend._id));
+        arrayNin.push(user._id);
+        let unique = [...new Set(arrayNin)];
+
+        // for array use $nin
+        // for object use $ni
+        const users = await this.userModel.find({ _id: { $nin: unique } });
+        return users;
     }
 }
