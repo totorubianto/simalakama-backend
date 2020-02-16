@@ -38,7 +38,7 @@ export class FriendsService {
         return friend;
     }
 
-    async listFriend(user: Model<User>) {
+    async getFriend(user: Model<User>) {
         let friend = await this.friendModel.aggregate([
             {
                 $match: {
@@ -99,7 +99,7 @@ export class FriendsService {
         return friend;
     }
 
-    async listPending(user: Model<User>) {
+    async getPending(user: Model<User>) {
         let friend = await this.friendModel
             .find({
                 $and: [{ recipient: user._id }, { status: FriendType.PENDING }],
@@ -109,12 +109,11 @@ export class FriendsService {
         return friend;
     }
 
-    // findall user service
-    async findAll(query: any, user: Model<User>): Promise<User[]> {
-        const friend = await this.listFriend(user);
+    // getall user service
+    async getAll(query: any, user: Model<User>): Promise<User[]> {
+        const friend = await this.getFriend(user);
         let arrayNin = [];
-        friend.map(data => arrayNin.push(data.recipient._id));
-        friend.map(data => arrayNin.push(data.requester._id));
+        friend.map(data => arrayNin.push(data.friend._id));
         arrayNin.push(user._id);
         let unique = [...new Set(arrayNin)];
 

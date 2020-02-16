@@ -102,10 +102,9 @@ export class FilesService {
     }
 
     maxSizeArr(size: number, files) {
-        console.log(files);
         const max = size * (1024 * 1024);
         const data = files.every(file => {
-            return file.size < max;
+            return file.size > max;
         });
         return data;
     }

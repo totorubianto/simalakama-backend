@@ -34,25 +34,25 @@ export class FriendsController {
 
     // @list Friend
     @UserTypes(UserType.USER)
-    @Get('list-friend')
+    @Get('get-friend')
     async listFriend(@User() user: any) {
-        const friend = await this.friendsService.listFriend(user);
+        const friend = await this.friendsService.getFriend(user);
         return friend;
     }
 
     // @list Pending
     @UserTypes(UserType.USER)
-    @Get('list-pending')
+    @Get('get-pending')
     async listPending(@User() user: any) {
-        const users = await this.friendsService.listPending(user);
+        const users = await this.friendsService.getPending(user);
         return { users };
     }
 
     // @findAll
     @UserTypes(UserType.USER)
-    @Get('find-all')
+    @Get('get-all')
     async findAll(@User() user: any) {
-        const users = await this.friendsService.findAll(null, user);
+        const users = await this.friendsService.getAll(null, user);
         return { users };
     }
 

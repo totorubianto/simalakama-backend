@@ -20,7 +20,7 @@ export class PostsService {
             content: createPostDto.contents,
         });
         const maxSizeMB = 1;
-        if (!this.filesService.maxSizeArr(maxSizeMB, files)) {
+        if (this.filesService.maxSizeArr(maxSizeMB, files)) {
             throw new PayloadTooLargeException('Payload to larage image!');
         }
         const images = await this.uploadImages(files, user);
