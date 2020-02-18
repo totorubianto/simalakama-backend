@@ -27,7 +27,8 @@ export class PostsController {
     @Post('create')
     @UseInterceptors(AnyFilesInterceptor())
     async create(@Body() createPostDto: CreatePostDto, @User() user, @UploadedFiles() files) {
-        const { post } = await this.postsService.create(createPostDto, user, files);
+        const images = files.filter(f => f.fieldname === 'images');
+        const { post } = await this.postsService.create(createPostDto, user, images);
         return { post };
     }
 
