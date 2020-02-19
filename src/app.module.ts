@@ -42,6 +42,7 @@ import { PostsService } from './posts/posts.service';
 import { CronService } from './cron/cron.service';
 import { SeedService } from './seed/seed.service';
 import { PostsController } from './posts/posts.controller';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
     imports: [
@@ -92,6 +93,7 @@ import { PostsController } from './posts/posts.controller';
         CompaniesModule,
         FriendsModule,
         PostsModule,
+        CommentsModule,
     ],
     controllers: [AppController],
     providers: [
