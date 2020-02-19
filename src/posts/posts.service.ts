@@ -54,7 +54,12 @@ export class PostsService {
         let cursor = this.postModel
             .find(query)
             .populate('images')
-            .populate('actor');
+            .populate({
+                path: 'actor',
+                populate: {
+                    path: 'avatar',
+                },
+            });
         if (skip) cursor.skip(skip);
         if (limit) cursor.limit(limit);
         const posts = await cursor.exec();
