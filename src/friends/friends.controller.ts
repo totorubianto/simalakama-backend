@@ -22,7 +22,7 @@ import { UserTypesGuard } from 'src/global/guard/user-types.guard';
 @UseGuards(UserTypesGuard)
 @Controller('friends')
 export class FriendsController {
-    constructor(private readonly friendsService: FriendsService) {}
+    constructor(private readonly friendsService: FriendsService) { }
 
     @UserTypes(UserType.USER)
     @HttpCode(200)
@@ -36,8 +36,8 @@ export class FriendsController {
     @UserTypes(UserType.USER)
     @Get('get-friend')
     async listFriend(@User() user: any) {
-        const friend = await this.friendsService.getFriend(user);
-        return friend;
+        const friends = await this.friendsService.getFriend(user);
+        return { friends };
     }
 
     // @list Pending

@@ -12,7 +12,7 @@ export class FriendsService {
         @InjectModel('Friend') private friendModel: Model<Friend>,
         @InjectModel('User') private userModel: Model<Friend>,
         private readonly usersService: UsersService,
-    ) {}
+    ) { }
 
     async findOne(query: any) {
         const friend = await this.friendModel.findOne(query);
@@ -37,7 +37,6 @@ export class FriendsService {
                     ],
                 },
             },
-
             {
                 $addFields: {
                     friend: {
