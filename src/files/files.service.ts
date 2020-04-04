@@ -8,7 +8,7 @@ import * as path from 'path';
 import { GlobalHelper } from '../global/helper/global.helper';
 @Injectable()
 export class FilesService {
-    constructor(@InjectModel('File') readonly file: Model<IFile>) {}
+    constructor(@InjectModel('File') readonly file: Model<IFile>) { }
 
     async findById(id: string) {
         return await this.file.findOne({ _id: id }).exec();
@@ -71,7 +71,7 @@ export class FilesService {
         return uploaded.save();
     }
 
-    private async uploadS3(file: any, desc?: string) {}
+    private async uploadS3(file: any, desc?: string) { }
 
     async remove(id: string): Promise<boolean> {
         const file = await this.findById(id);
@@ -112,9 +112,11 @@ export class FilesService {
 
     maxSizeArr(size: number, files) {
         const max = size * (1024 * 1024);
+        if (files.length < 1) return false
         const data = files.every(file => {
             return file.size > max;
         });
+
         return data;
     }
 }
