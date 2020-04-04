@@ -62,6 +62,7 @@ export class PostsService {
             });
         if (skip) cursor.skip(skip);
         if (limit) cursor.limit(limit);
+        cursor.sort({ createdAt: -1 })
         const posts = await cursor.exec();
         const count = await this.postModel.countDocuments(query);
 
