@@ -12,8 +12,9 @@ export class PostsService {
     constructor(
         @InjectModel('Post') private postModel: Model<Post>,
         private readonly filesService: FilesService,
-    ) {}
+    ) { }
     async create(createPostDto: CreatePostDto, user: Model<User>, files: any[]) {
+        console.log(files, createPostDto)
         const post = new this.postModel({
             actor: user._id,
             actorModel: user.constructor.modelName,
