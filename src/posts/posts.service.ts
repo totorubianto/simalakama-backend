@@ -32,6 +32,7 @@ export class PostsService {
         const images = await this.uploadImages(files, user);
         post.images = images;
         await post.save();
+        post.actor = user;
         return { post };
     }
 
