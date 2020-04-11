@@ -5,6 +5,8 @@ import { User } from 'src/users/interfaces/user.interface';
 import { Friend } from './interfaces/friend.interface';
 import { FriendType } from 'src/global/enum/friend-role.enum';
 import { UsersService } from 'src/users/users.service';
+import { FilesService } from 'src/files/files.service';
+
 
 @Injectable()
 export class FriendsService {
@@ -12,6 +14,7 @@ export class FriendsService {
         @InjectModel('Friend') private friendModel: Model<Friend>,
         @InjectModel('User') private userModel: Model<Friend>,
         private readonly usersService: UsersService,
+        private readonly fileService: FilesService,
     ) { }
 
     async findOne(query: any) {
@@ -80,6 +83,7 @@ export class FriendsService {
                 },
             },
             { $unwind: { path: '$friend.avatar', preserveNullAndEmptyArrays: true } },
+            { $addFields: { "friend.avatar.url": this.fileService.fileUrl("$friend.avatar") } }
         ]);
 
         return friend;

@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { IFile } from './interfaces/file.interface';
-import { FileType } from '../global/enum/file-type.enum';
+import { FileType, FileEnum } from '../global/enum/file-type.enum';
 import { promises as fs } from 'fs';
 import { InjectModel } from '@nestjs/mongoose';
 import * as path from 'path';
@@ -118,5 +118,29 @@ export class FilesService {
         });
 
         return data;
+    }
+
+    public fileUrl(files: string) {
+        const key = files.concat(".key")
+        const branches = [];
+        FileEnum.forEach((t) => {
+            switch (t) {
+                case FileType.LOCAL_DOCUMENTS:
+                    const caseDocsLocal = { $eq: ['$friend.avatar.type', t] };
+                    branches.push({ case: caseDocsLocal, then: { $concat: [GlobalHelper.uploadUrlDocument, key] } });
+                    break;
+                case FileType.LOCAL_IMAGES:
+                    const caseImgLocal = { $eq: ['$friend.avatar.type', t] };
+                    branches.push({ case: caseImgLocal, then: { $concat: [GlobalHelper.uploadUrlImage, key] } });
+                    break;
+            }
+        })
+        const query = {
+            $switch: {
+                branches: branches,
+                default: null
+            }
+        };
+        return query;
     }
 }
