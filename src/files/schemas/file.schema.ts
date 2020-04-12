@@ -13,17 +13,19 @@ const FileSchema = new mongoose.Schema(
         description: { type: String, default: null },
         type: { type: String, enum: FileEnum },
     },
-    { timestamps: true },
+    {
+        timestamps: true,
+        toJSON: { virtual: true },
+        toObject: { virtual: true }
+    },
 );
 
-FileSchema.set('toJSON', { getters: true, virtuals: true });
-FileSchema.set('toObject', { getters: true, virtuals: true });
-
-FileSchema.virtual('url').get(function() {
+FileSchema.virtual('url').get(function () {
+    console.log(this)
     return GlobalHelper.fileUrl(this);
 });
 
-FileSchema.post('remove', function(doc) {
+FileSchema.post('remove', function (doc) {
     // Remove file from local / s3
     switch (this.type) {
         case FileType.LOCAL_IMAGES:
@@ -37,7 +39,7 @@ FileSchema.post('remove', function(doc) {
 
 const hidden = ['id', 'key', '__v'];
 
-FileSchema.methods.toJSON = function() {
+FileSchema.methods.toJSON = function () {
     var obj = this.toObject();
     for (var i = hidden.length - 1; i >= 0; i--) {
         delete obj[hidden[i]];

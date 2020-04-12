@@ -75,7 +75,7 @@ export class UsersService {
 
     // findall user service
     async findById(id: string): Model<User> {
-        const user = await this.userModel.findById(id).populate("avatar");
+        const user = await this.userModel.findOne({ _id: id }).populate('avatar');
         return user;
     }
 
