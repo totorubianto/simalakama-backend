@@ -75,7 +75,9 @@ export class UsersService {
 
     // findall user service
     async findById(id: string): Model<User> {
-        return await this.userModel.findById(id);
+        const user = await this.userModel.findById(id);
+        console.log(user)
+        return user;
     }
 
     // findall user service

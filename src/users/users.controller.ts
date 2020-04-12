@@ -45,7 +45,7 @@ export class UsersController {
         private usersService: UsersService,
         private authService: AuthService,
         private verificationService: VerificationService,
-    ) {}
+    ) { }
 
     // @Register
     @Post('register')
@@ -152,8 +152,9 @@ export class UsersController {
     // @me
     @UserTypes(UserType.USER)
     @Get('me')
-    me(@User() user: any): Promise<any[]> {
-        return this.usersService.findById(user._id);
+    async me(@User() user: any): Promise<any[]> {
+        const users = await this.usersService.findById(user._id);
+        return users
     }
 
     // Request Forgot Password
