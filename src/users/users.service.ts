@@ -26,7 +26,7 @@ export class UsersService {
         private readonly verificationService: VerificationService,
         private readonly authService: AuthService,
         private readonly filesService: FilesService,
-    ) {}
+    ) { }
 
     // create service
     async create(createUserDto: CreateUserDto, client: any) {
@@ -75,7 +75,7 @@ export class UsersService {
 
     // findall user service
     async findById(id: string): Model<User> {
-        return await this.userModel.findById(id).populate('avatar');
+        return await this.userModel.findById(id);
     }
 
     // findall user service
