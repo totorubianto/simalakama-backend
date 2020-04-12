@@ -153,7 +153,7 @@ export class UsersController {
     @UserTypes(UserType.USER)
     @Get('me')
     async me(@User() user: any): Promise<any[]> {
-        const users = await this.usersService.findById(user._id);
+        const users = await this.usersService.findById(user._id).populate("avatar");
         return users
     }
 
