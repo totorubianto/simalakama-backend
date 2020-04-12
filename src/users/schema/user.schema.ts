@@ -41,7 +41,7 @@ export const UserSchema = new mongoose.Schema(
     {
         timestamps: true,
         toJSON: {
-            transform: function(doc, ret) {
+            transform: function (doc, ret) {
                 delete ret.password;
             },
         },
@@ -49,7 +49,7 @@ export const UserSchema = new mongoose.Schema(
 );
 
 // sebelum save
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
     let user = this;
     // biar tidak mengulang hash password
     if (!user.isModified('password')) return next();

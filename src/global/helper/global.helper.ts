@@ -15,7 +15,6 @@ class GlobalHelper {
     static uploadUrlDocument: string = url.resolve(process.env.APP_URL, '/upload/documents/');
 
     static fileUrl(file: Model<IFile>) {
-        console.log(file)
         let res;
         switch (file.type) {
             case FileType.LOCAL_IMAGES:

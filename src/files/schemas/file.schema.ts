@@ -15,15 +15,17 @@ const FileSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
-        toJSON: { virtual: true },
-        toObject: { virtual: true }
+        toJSON: { virtual: true, getters: true },
+        toObject: { virtual: true, getters: true }
     },
 );
 
 FileSchema.virtual('url').get(function () {
-    console.log(this)
-    return GlobalHelper.fileUrl(this);
-});
+    return GlobalHelper.fileUrl(this);;
+})
+// FileSchema.virtual('url').get(function () {
+//     return GlobalHelper.fileUrl(this);
+// });
 
 FileSchema.post('remove', function (doc) {
     // Remove file from local / s3
