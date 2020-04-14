@@ -18,6 +18,11 @@ import { User } from 'src/global/decorator/user';
 import { TransformInterceptor } from 'src/global/interceptor/transform.interceptor';
 import { HttpExceptionFilter } from 'src/global/filter/http-exception.filter';
 import { UserTypesGuard } from 'src/global/guard/user-types.guard';
+import { OParseIntPipe } from 'src/global/pipes/o-parse-int.pipe';
+import { ParseSortPipe } from 'src/global/pipes/parse-sort.pipe';
+import { ParseEnumPipe } from 'src/global/pipes/parse-enum.pipe';
+import { filter } from 'rxjs/operators';
+import { ParseFilterPipe } from 'src/global/pipes/parse-filter.pipe';
 
 @UseGuards(UserTypesGuard)
 @Controller('friends')
@@ -40,6 +45,19 @@ export class FriendsController {
         return { friends };
     }
 
+    @UserTypes(UserType.USER)
+    @Get('get-friend-by-name')
+    async getFriendByName(
+        @User() user: any,
+        @Query('skip', new OParseIntPipe()) qSkip,
+        @Query('limit', new OParseIntPipe()) qLimit,
+        @Query('sort', new ParseSortPipe()) qSort,
+        @Query('filter', new ParseFilterPipe()) qType,
+    ) {
+        const [users] = await this.friendsService.getFriendByName(user, qSkip, qLimit, qSort, qType);
+        return { users };
+    }
+
     // @list Pending
     @UserTypes(UserType.USER)
     @Get('get-pending')
@@ -55,6 +73,7 @@ export class FriendsController {
         const users = await this.friendsService.getAll(null, user);
         return { users };
     }
+
 
     // @confirm friend
     @UserTypes(UserType.USER)

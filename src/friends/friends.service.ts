@@ -89,6 +89,81 @@ export class FriendsService {
         return friend;
     }
 
+    async getFriendByName(user: Model<User>, skip?: number, limit?: number, sort?: string[], filter?: string[]) {
+        const search = filter[0]
+        let query = {
+            'friend.username': { $regex: '.*' + search + '.*', $options: 'i' }
+        }
+        console.log(query)
+        // const filterType = filter.filter(f => { return PaymentTypeEnum.includes(f) });
+        // if (filterType && filterType.length > 0) query['type'] = { $in: filterType };
+        const aggr = [
+            {
+                $match: {
+                    $and: [
+                        {
+                            $or: [{ recipient: user._id }, { requester: user._id }],
+                        },
+                        { status: FriendType.FRIEND },
+                    ],
+                },
+            },
+            {
+                $addFields: {
+                    friend: {
+                        $cond: [{ $eq: ['$requester', user._id] }, '$recipient', '$requester'],
+                    },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'requester',
+                    foreignField: '_id',
+                    as: 'requester',
+                },
+            },
+            { $unwind: { path: '$requester', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'recipient',
+                    foreignField: '_id',
+                    as: 'recipient',
+                },
+            },
+            { $unwind: { path: '$recipient', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'friend',
+                    foreignField: '_id',
+                    as: 'friend',
+                },
+            },
+            { $unwind: { path: '$friend', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'files',
+                    localField: 'friend.avatar',
+                    foreignField: '_id',
+                    as: 'friend.avatar',
+                },
+            },
+            { $unwind: { path: '$friend.avatar', preserveNullAndEmptyArrays: true } },
+            { $addFields: { "friend.avatar.url": this.fileService.fileUrl("$friend.avatar") } },
+            { $match: query }
+        ];
+        let cursor = this.friendModel.aggregate(aggr);
+        console.log(cursor)
+        if (sort) cursor.sort({ [sort[0]]: sort[1] });
+        if (skip) cursor.skip(skip);
+        if (limit) cursor.limit(5);
+        const friends = await cursor.exec();
+        console.log(friends)
+        return [friends, skip, limit, filter];
+    }
+
     //route for add friend
     async addFriend(user: Model<User>, id: string) {
         if (user._id.toString() === id)
