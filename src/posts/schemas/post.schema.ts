@@ -15,6 +15,9 @@ const PostSchema = new mongoose.Schema(
         content: { type: String },
         hashtag: { type: [String] },
         images: [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
+        mention: [{
+            type: mongoose.Schema.Types.ObjectId,
+        }]
     },
     { timestamps: true },
 );
