@@ -13,7 +13,7 @@ const PostSchema = new mongoose.Schema(
             enum: ['User'],
         },
         content: { type: String },
-        hashtag: { type: [String] },
+        hashtag: [{ type: String }],
         images: [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
         mention: [{
             type: mongoose.Schema.Types.ObjectId,
