@@ -152,15 +152,23 @@ export class FriendsService {
             },
             { $unwind: { path: '$friend.avatar', preserveNullAndEmptyArrays: true } },
             { $addFields: { "friend.avatar.url": this.fileService.fileUrl("$friend.avatar") } },
-            { $match: query }
+            { $addFields: { "name": { $concat: ["$friend.firstName", " ", "$friend.lastName"] } } },
+            { $addFields: { "link": "$friend.username" } },
+            { $addFields: { "avatar": { $ifNull: ["$friend.avatar.url", { $concat: ["https://ui-avatars.com/api/?name=", "$friend.firstName", "$friend.lastName"] }] } } },
+            { $match: query },
+            {
+                $project: {
+                    name: 1,
+                    link: 1,
+                    avatar: 1
+                }
+            }
         ];
         let cursor = this.friendModel.aggregate(aggr);
-        console.log(cursor)
         if (sort) cursor.sort({ [sort[0]]: sort[1] });
         if (skip) cursor.skip(skip);
         if (limit) cursor.limit(5);
         const friends = await cursor.exec();
-        console.log(friends)
         return [friends, skip, limit, filter];
     }
 
