@@ -18,6 +18,7 @@ export class PostsService {
             actor: user._id,
             actorModel: user.constructor.modelName,
             content: createPostDto.contents,
+            hashtag: createPostDto.hashtag
         });
         if (files.length > 5) {
             throw new BadRequestException('File tidak boleh melebihi 5');
