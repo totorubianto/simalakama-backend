@@ -5,4 +5,6 @@ export class CreatePostDto {
     readonly contents: string;
     @IsString()
     readonly hashtag: string;
+    @IsString()
+    readonly mention: string;
 }
