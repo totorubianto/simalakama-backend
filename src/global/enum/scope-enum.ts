@@ -1,14 +1,14 @@
 
-class FriendType {
-    static PENDING: string = 'PENDING';
+class ScopeType {
+    static PUBLIC: string = 'PUBLIC';
     static FRIEND: string = 'FRIEND';
 
     static getStr(en: string): string {
         switch (en) {
-            case FriendType.PENDING:
-                return 'Pending';
+            case ScopeType.PUBLIC:
+                return 'Public';
                 break;
-            case FriendType.FRIEND:
+            case ScopeType.FRIEND:
                 return 'Friend';
                 break;
             default:
@@ -17,5 +17,5 @@ class FriendType {
         }
     }
 }
-const FriendEnum = [FriendType.FRIEND, FriendType.PENDING];
-export { FriendType, FriendEnum };
+const ScopeEnum = [ScopeType.FRIEND, ScopeType.PUBLIC];
+export { ScopeType, ScopeEnum };

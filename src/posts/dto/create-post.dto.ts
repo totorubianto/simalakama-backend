@@ -1,10 +1,15 @@
-import { IsString } from 'class-validator';
+import { IsString, IsArray, IsOptional, IsEnum } from 'class-validator';
+import { ScopeEnum } from '../../global/enum';
 
 export class CreatePostDto {
     @IsString()
     readonly contents: string;
-    @IsString()
+    @IsOptional()
+    @IsArray()
     readonly hashtag: string;
-    @IsString()
+    @IsOptional()
+    @IsArray()
     readonly mention: string;
+    @IsEnum(ScopeEnum)
+    readonly scope: string;
 }

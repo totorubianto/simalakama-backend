@@ -6,13 +6,13 @@ class UserType {
 
     static getStr(en: string): string {
         switch (en) {
-            case 'ADMIN':
+            case UserType.ADMIN:
                 return 'Admin';
                 break;
-            case 'USER':
+            case UserType.USER:
                 return 'User';
                 break;
-            case 'COMPANIES':
+            case UserType.COMPANIES:
                 return 'Companies';
                 break;
             default:
@@ -23,13 +23,13 @@ class UserType {
 
     static getModel(en: string): string {
         switch (en) {
-            case 'ADMIN':
+            case UserType.ADMIN:
                 return 'Admin';
                 break;
-            case 'USER':
+            case UserType.USER:
                 return 'User';
                 break;
-            case 'COMPANIES':
+            case UserType.COMPANIES:
                 return 'Companies';
                 break;
             default:

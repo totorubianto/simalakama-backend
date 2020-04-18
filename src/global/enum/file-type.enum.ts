@@ -1,4 +1,3 @@
-const FileEnum = ['LOCAL_IMAGES', 'LOCAL_DOCUMENTS', 'S3'];
 class FileType {
     static LOCAL_IMAGES: string = 'LOCAL_IMAGES';
     static LOCAL_DOCUMENTS: string = 'LOCAL_DOCUMENTS';
@@ -6,13 +5,13 @@ class FileType {
 
     static getStr(en: string): string {
         switch (en) {
-            case 'LOCAL_IMAGES':
+            case FileType.LOCAL_IMAGES:
                 return 'Local Images';
                 break;
-            case 'LOCAL_DOCUMENTS':
+            case FileType.LOCAL_DOCUMENTS:
                 return 'Local Documents';
                 break;
-            case 'S3':
+            case FileType.LOCAL_IMAGES:
                 return 'AWS S3';
                 break;
             default:
@@ -21,5 +20,7 @@ class FileType {
         }
     }
 }
+
+const FileEnum = [FileType.LOCAL_IMAGES, FileType.LOCAL_DOCUMENTS, FileType.S3];
 
 export { FileType, FileEnum };

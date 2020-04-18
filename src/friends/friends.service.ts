@@ -94,7 +94,6 @@ export class FriendsService {
         let query = {
             'friend.username': { $regex: '.*' + search + '.*', $options: 'i' }
         }
-        console.log(query)
         // const filterType = filter.filter(f => { return PaymentTypeEnum.includes(f) });
         // if (filterType && filterType.length > 0) query['type'] = { $in: filterType };
         const aggr = [

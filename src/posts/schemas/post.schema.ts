@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { ScopeEnum } from '../../global/enum';
 
 const PostSchema = new mongoose.Schema(
     {
@@ -17,7 +18,12 @@ const PostSchema = new mongoose.Schema(
         images: [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
         mention: [{
             type: mongoose.Schema.Types.ObjectId,
-        }]
+        }],
+        scope: {
+            type: String,
+            required: true,
+            enum: ScopeEnum
+        }
     },
     { timestamps: true },
 );

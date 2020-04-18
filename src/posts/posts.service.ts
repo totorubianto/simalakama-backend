@@ -19,7 +19,8 @@ export class PostsService {
             actorModel: user.constructor.modelName,
             content: createPostDto.contents,
             hashtag: createPostDto.hashtag,
-            mention: createPostDto.mention
+            mention: createPostDto.mention,
+            scope: createPostDto.scope
         });
         if (files.length > 5) {
             throw new BadRequestException('File tidak boleh melebihi 5');
