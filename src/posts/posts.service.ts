@@ -7,6 +7,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { FilesService } from 'src/files/files.service';
 import { FileType } from 'src/global/enum/file-type.enum';
 import { CreatePostDto } from './dto/create-post.dto';
+import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
 @Injectable()
 export class PostsService {
     constructor(
@@ -37,6 +38,11 @@ export class PostsService {
         await post.save();
         post.actor = user;
         return { post };
+    }
+
+    async findById(id: string) {
+        const post = await this.postModel.findById(id)
+        return post;
     }
 
     async uploadImages(files: any[], user) {
@@ -71,5 +77,29 @@ export class PostsService {
         const count = await this.postModel.countDocuments(query);
 
         return [posts, skip, limit, count];
+    }
+
+    async addComment(id, user: Model<User>, body: CreateCommentDto) {
+        const post = await this.findById(id)
+        if (!post) throw new BadRequestException("tidak ditemukan post id")
+        const newComment = {
+            actor: user._id,
+            comment: body.comment,
+            actorModel: "User",
+            sub: []
+        }
+        post.comment.push(newComment)
+        await post.save()
+        // console.log(post, user, body)
+        return post;
+    }
+
+    async deleteComment(postId, id: string, user: Model<User>) {
+        let post = await this.findById(postId)
+        if (!post) throw new BadRequestException("tidak ditemukan post id")
+        post.comment = post.comment.filter(data => data._id.toString() !== id)
+        // console.log(data)
+        await post.save();
+        return post;
     }
 }

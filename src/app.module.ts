@@ -93,7 +93,7 @@ import { CommentsModule } from './comments/comments.module';
         CompaniesModule,
         FriendsModule,
         PostsModule,
-        CommentsModule,
+        // CommentsModule,
     ],
     controllers: [AppController],
     providers: [
@@ -115,7 +115,7 @@ export class AppModule {
     constructor(
         private readonly cronService: CronService,
         private readonly seedService: SeedService,
-    ) {}
+    ) { }
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(AuthMiddleware)

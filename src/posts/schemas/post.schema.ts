@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import { ScopeEnum } from '../../global/enum';
+import { CommentSchema } from '../../comments/schemas/coment.schema';
 
 const PostSchema = new mongoose.Schema(
     {
@@ -23,7 +24,8 @@ const PostSchema = new mongoose.Schema(
             type: String,
             required: true,
             enum: ScopeEnum
-        }
+        },
+        comment: [CommentSchema]
     },
     { timestamps: true },
 );
