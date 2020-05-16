@@ -6,7 +6,8 @@ import { Friend } from './interfaces/friend.interface';
 import { FriendType } from 'src/global/enum/friend-role.enum';
 import { UsersService } from 'src/users/users.service';
 import { FilesService } from 'src/files/files.service';
-
+import { EventGateway } from '../event/event.gateway'
+import { EventType } from 'src/global/enum/event-type.enum';
 
 @Injectable()
 export class FriendsService {
@@ -223,6 +224,7 @@ export class FriendsService {
         await friend.save();
         return friend;
     }
+
 
     //reject user
     async reject(user: Model<User>, id: string) {

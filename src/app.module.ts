@@ -43,6 +43,10 @@ import { CronService } from './cron/cron.service';
 import { SeedService } from './seed/seed.service';
 import { PostsController } from './posts/posts.controller';
 import { CommentsModule } from './comments/comments.module';
+import { EventModule } from './event/event.module';
+import { EventGateway } from './event/event.gateway';
+import { MessagesModule } from './messages/messages.module';
+import { MessagesController } from './messages/messages.controller';
 
 @Module({
     imports: [
@@ -93,6 +97,8 @@ import { CommentsModule } from './comments/comments.module';
         CompaniesModule,
         FriendsModule,
         PostsModule,
+        EventModule,
+        MessagesModule,
         // CommentsModule,
     ],
     controllers: [AppController],
@@ -135,7 +141,7 @@ export class AppModule {
                 { path: 'admins/forgot-password/:token', method: RequestMethod.POST },
                 { path: 'admins/verify/:token', method: RequestMethod.GET },
             )
-            .forRoutes(UsersController, AdminsController, FriendsController, PostsController);
+            .forRoutes(UsersController, AdminsController, FriendsController, PostsController, MessagesController);
     }
     async onApplicationBootstrap() {
         this.seedService.run();

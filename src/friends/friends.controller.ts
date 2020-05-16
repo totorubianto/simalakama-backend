@@ -10,6 +10,7 @@ import {
     UseGuards,
     Query,
     Get,
+    Body,
 } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { UserType } from 'src/global/enum';
