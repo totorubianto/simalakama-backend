@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Param, Body, UseGuards, Get } from '@nestjs/common';
 import { UserTypes } from '../global/decorator/userTypes';
 import { UserType } from '../global/enum';
 import { User } from '../global/decorator/user';
@@ -14,9 +14,16 @@ export class MessagesController {
     ) { }
 
     @UserTypes(UserType.USER)
-    @Post('chat/:idFriend')
-    async chat(@User() user, @Param('idFriend') id, @Body() body: CreateChatDto) {
-        const friend = await this.messageService.create(user, id, body);
+    @Post('create')
+    async chat(@User() user, @Body() body: CreateChatDto) {
+        const friend = await this.messageService.create(user, body);
         return {};
+    }
+
+    @UserTypes(UserType.USER)
+    @Get('gets/:idFriend')
+    async get(@User() user, @Param('idFriend') id) {
+        const messages = await this.messageService.get(user, id);
+        return { messages };
     }
 }

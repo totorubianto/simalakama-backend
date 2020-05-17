@@ -12,7 +12,7 @@ export class MessagesService {
         @InjectModel('Message') private messageModel: Model<Message>,
         private readonly eventGateway: EventGateway
     ) { }
-    async create(user: Model<User>, id: string, body: CreateChatDto) {
+    async create(user: Model<User>, body: CreateChatDto) {
         console.log(body.message)
         const newMessage = new this.messageModel({
             message: body.message,
@@ -22,5 +22,27 @@ export class MessagesService {
         await newMessage.save()
         console.log(newMessage, "hhhh")
         await this.eventGateway.handleNotif(EventType.MESSAGE, newMessage);
+    }
+
+    async findOne(query: any) {
+        const result = await this.messageModel.findOne(query)
+        return result
+    }
+
+    async find(query: any) {
+        const result = await this.messageModel.find(query)
+        return result
+    }
+
+    async get(user: Model<User>, id: string) {
+        const data: Model<Message> = await this.find(
+            {
+                $or: [
+                    { $and: [{ recipient: id }, { requester: user._id }] },
+                    { $and: [{ recipient: user._id }, { requester: id }] }
+                ]
+            }
+        )
+        return data;
     }
 }
