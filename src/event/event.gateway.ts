@@ -8,6 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
+import { EventType } from '../global/enum/event-type.enum';
 
 @WebSocketGateway()
 export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -22,11 +23,12 @@ export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     this.logger.log('Init');
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket, ...args: any[]) {
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    this.logger.log(`Client connected: ${client.id}`);
+    this.logger.log(`Client connected: ${client.handshake.query.id}`);
+    this.handleNotif(EventType.CONNECT, client.handshake.query.id);
   }
 }
