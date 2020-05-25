@@ -13,7 +13,7 @@ async function bootstrap() {
     app.use(cookieParser());
     app.useStaticAssets(join(__dirname, '..', 'public'));
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
-    app.setGlobalPrefix('api');
+    app.setGlobalPrefix('simalakama/api');
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
@@ -23,7 +23,6 @@ async function bootstrap() {
             exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
         }),
     );
-    console.log(process.env.PORT, app.get(ConfigService).getInt('APP_PORTs'), "ini dia")
     app.listen(process.env.PORT || app.get(ConfigService).getInt('APP_PORT'));
 }
 
