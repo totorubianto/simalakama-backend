@@ -23,6 +23,7 @@ async function bootstrap() {
             exceptionFactory: (errors: ValidationError[]) => new BadRequestException(errors),
         }),
     );
+    console.log(process.env.PORT, app.get(ConfigService).getInt('APP_PORTs'), "ini dia")
     app.listen(process.env.PORT || app.get(ConfigService).getInt('APP_PORT'));
 }
 
