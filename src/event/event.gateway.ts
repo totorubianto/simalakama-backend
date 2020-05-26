@@ -9,8 +9,8 @@ import {
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { EventType } from '../global/enum/event-type.enum';
-
-@WebSocketGateway(parseInt(process.env.PORT) + 1, { transports: ['websocket'] })
+console.log(parseInt(process.env.APP_PORT) + 1)
+@WebSocketGateway(parseInt(process.env.APP_PORT) + 1)
 export class EventGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('EventGateway');
